@@ -3,6 +3,8 @@
  * @description CPU opponent with configurable difficulty and behavior patterns
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+
 import type { FighterRuntimeState } from './FighterState';
 import { FighterState } from './FighterState';
 import { INPUT_FLAGS, type InputFrame } from './InputFrame';

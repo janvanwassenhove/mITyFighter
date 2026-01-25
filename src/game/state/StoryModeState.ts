@@ -3,10 +3,10 @@
  * @description Tracks progression through story mode fights
  */
 
-import type { FighterId } from '../assets/fighterRegistry';
-import { FIGHTER_IDS, FIGHTER_REGISTRY } from '../assets/fighterRegistry';
 import type { BackgroundId } from '../assets/backgroundRegistry';
 import { BACKGROUND_IDS } from '../assets/backgroundRegistry';
+import type { FighterId } from '../assets/fighterRegistry';
+import { FIGHTER_IDS, FIGHTER_REGISTRY } from '../assets/fighterRegistry';
 import type { AIDifficulty } from '../sim/FightingAI';
 
 // =============================================================================

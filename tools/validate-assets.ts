@@ -6,6 +6,8 @@
  * Run with: npm run validate:assets
  */
 
+/* eslint-disable no-undef, no-console */
+
 import * as fs from 'fs';
 import * as path from 'path';
 

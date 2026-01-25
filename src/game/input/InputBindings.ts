@@ -5,9 +5,10 @@
  */
 
 import { PlayerId } from '../config/constants';
+import type { InputAction } from '../sim/InputFrame';
+
 import { getKeyboardLayout, getP1MovementKeys, type KeyboardLayout } from './KeyboardLayout';
 
-import type { InputAction } from '../sim/InputFrame';
 
 // =============================================================================
 // Types

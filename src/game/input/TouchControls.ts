@@ -4,7 +4,10 @@
  * @see docs/INPUT.md - Touch control layout and behavior
  */
 
-import Phaser from 'phaser';
+/* eslint-disable no-undef */
+/* global navigator */
+
+import type Phaser from 'phaser';
 
 import { PlayerId, GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
 import type { InputAction } from '../sim/InputFrame';
@@ -39,9 +42,12 @@ interface VirtualButton {
  * Callback when touch input changes
  */
 export type TouchInputCallback = (
-  player: PlayerId,
-  action: InputAction,
-  active: boolean
+  // eslint-disable-next-line no-unused-vars
+  _player: PlayerId,
+  // eslint-disable-next-line no-unused-vars
+  _action: InputAction,
+  // eslint-disable-next-line no-unused-vars
+  _active: boolean
 ) => void;
 
 // =============================================================================

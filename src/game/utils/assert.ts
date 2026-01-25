@@ -49,6 +49,7 @@ export function assertDefined<T>(
   value: T | null | undefined,
   message: string
 ): T {
+  // eslint-disable-next-line eqeqeq
   assert(value != null, message);
   return value;
 }

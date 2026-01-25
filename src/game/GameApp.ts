@@ -8,14 +8,14 @@ import Phaser from 'phaser';
 
 import { createGameConfig } from './config/gameConfig';
 import { BootScene } from './scenes/BootScene';
-import { PreloadScene } from './scenes/PreloadScene';
-import { TitleScene } from './scenes/TitleScene';
-import { ModeSelectScene } from './scenes/ModeSelectScene';
 import { CharacterSelectScene } from './scenes/CharacterSelectScene';
-import { StageSelectScene } from './scenes/StageSelectScene';
 import { FightScene } from './scenes/FightScene';
-import { StorySelectScene } from './scenes/StorySelectScene';
+import { ModeSelectScene } from './scenes/ModeSelectScene';
+import { PreloadScene } from './scenes/PreloadScene';
+import { StageSelectScene } from './scenes/StageSelectScene';
 import { StoryModeScene } from './scenes/StoryModeScene';
+import { StorySelectScene } from './scenes/StorySelectScene';
+import { TitleScene } from './scenes/TitleScene';
 import { logger } from './utils/logger';
 
 /**

@@ -77,7 +77,8 @@ export class PixelFighterRenderer {
   private availableActions: ActionId[];
 
   /** Callback when animation completes */
-  private onAnimationComplete: ((action: ActionId) => void) | null = null;
+  // eslint-disable-next-line no-unused-vars
+  private onAnimationComplete: ((_action: ActionId) => void) | null = null;
 
   /**
    * Create a fighter renderer.
@@ -303,7 +304,8 @@ export class PixelFighterRenderer {
    * @param callback - Function to call when animation completes
    */
   public setOnAnimationComplete(
-    callback: ((action: ActionId) => void) | null
+    // eslint-disable-next-line no-unused-vars
+    callback: ((_action: ActionId) => void) | null
   ): void {
     this.onAnimationComplete = callback;
   }

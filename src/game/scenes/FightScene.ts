@@ -3,6 +3,8 @@
  * @description Handles rounds, combat, health, and match flow
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+
 import Phaser from 'phaser';
 
 import { getFighterTextureKey } from '../assets/AssetKeys';

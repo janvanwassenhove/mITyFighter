@@ -3,6 +3,9 @@
  * @description Handles fighter updates, collision, and damage
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+
+import { ComboInputDetector, COMBO_MOVE_DATA, type ComboMove } from './ComboInput';
 import {
   FighterState,
   type FighterRuntimeState,
@@ -14,7 +17,6 @@ import {
   isBlocking,
 } from './FighterState';
 import { INPUT_FLAGS, hasFlag, type InputFrame } from './InputFrame';
-import { ComboInputDetector, COMBO_MOVE_DATA, type ComboMove } from './ComboInput';
 
 // =============================================================================
 // Hitbox System

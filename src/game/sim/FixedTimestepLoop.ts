@@ -16,12 +16,14 @@ import type { InputFrame } from './InputFrame';
 /**
  * Callback for each fixed simulation tick.
  *
- * @param tick - Current tick number
- * @param inputs - Input frames for [P1, P2]
+ * @param _tick - Current tick number
+ * @param _inputs - Input frames for [P1, P2]
  */
 export type TickCallback = (
-  tick: number,
-  inputs: [InputFrame, InputFrame]
+  // eslint-disable-next-line no-unused-vars
+  _tick: number,
+  // eslint-disable-next-line no-unused-vars
+  _inputs: [InputFrame, InputFrame]
 ) => void;
 
 /**

@@ -3,6 +3,8 @@
  * @description Handles fighter states, transitions, and physics
  */
 
+/* eslint-disable no-unused-vars */
+
 // =============================================================================
 // Fighter States
 // =============================================================================

@@ -3,7 +3,8 @@
  * @description Dual health bars at top of screen with round indicators
  */
 
-import Phaser from 'phaser';
+import type Phaser from 'phaser';
+
 import { GAME_WIDTH } from '../config/constants';
 
 // =============================================================================

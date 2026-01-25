@@ -4,10 +4,10 @@
  * @see docs/QUALITY_GATES.md - validate:assets script
  */
 
-import type { ActionId } from '../AssetKeys';
-import type { FighterId } from '../fighterRegistry';
-import type { BackgroundId } from '../backgroundRegistry';
 import { FRAME_WIDTH, FRAME_HEIGHT } from '../../config/constants';
+import type { ActionId } from '../AssetKeys';
+import type { BackgroundId } from '../backgroundRegistry';
+import type { FighterId } from '../fighterRegistry';
 
 // =============================================================================
 // Types

@@ -6,8 +6,8 @@
 
 import type Phaser from 'phaser';
 
-import type { FighterId } from '../assets/fighterRegistry';
 import type { ActionId } from '../assets/AssetKeys';
+import type { FighterId } from '../assets/fighterRegistry';
 import { GAME_WIDTH, FacingDirection } from '../config/constants';
 
 // =============================================================================

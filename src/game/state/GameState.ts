@@ -3,8 +3,10 @@
  * @description Defines the state machine for MK-style game flow
  */
 
-import type { FighterId } from '../assets/fighterRegistry';
+/* eslint-disable no-unused-vars */
+
 import type { BackgroundId } from '../assets/backgroundRegistry';
+import type { FighterId } from '../assets/fighterRegistry';
 
 // =============================================================================
 // Game Flow States

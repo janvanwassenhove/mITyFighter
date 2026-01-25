@@ -4,6 +4,8 @@
  * @see docs/QUALITY_GATES.md - Logging conventions
  */
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Log levels.
  */

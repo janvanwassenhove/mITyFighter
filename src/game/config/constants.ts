@@ -93,7 +93,9 @@ export const IDLE_FALLBACKS: readonly ActionId[] = ['idle', 'idle2'] as const;
 
 /** Player identifiers */
 export const enum PlayerId {
+  // eslint-disable-next-line no-unused-vars
   P1 = 0,
+  // eslint-disable-next-line no-unused-vars
   P2 = 1,
 }
 
@@ -111,7 +113,9 @@ export const PLAYER_START_POSITIONS: Record<
 
 /** Facing directions */
 export const enum FacingDirection {
+  // eslint-disable-next-line no-unused-vars
   LEFT = -1,
+  // eslint-disable-next-line no-unused-vars
   RIGHT = 1,
 }
 

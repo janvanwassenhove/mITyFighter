@@ -5,8 +5,10 @@
  * @see docs/ARCHITECTURE.md - Simulation layer types
  */
 
-import type { FighterId } from '../assets/fighterRegistry';
+/* eslint-disable no-unused-vars */
+
 import type { ActionId } from '../assets/AssetKeys';
+import type { FighterId } from '../assets/fighterRegistry';
 import { FacingDirection, PlayerId } from '../config/constants';
 
 import type { InputFrame } from './InputFrame';

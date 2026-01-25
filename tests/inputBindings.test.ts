@@ -4,6 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 
+import { PlayerId } from '../src/game/config/constants';
 import {
   P1_BINDINGS,
   P2_BINDINGS_NUMPAD,
@@ -16,7 +17,6 @@ import {
   getPlayerBindings,
   getGlobalBindings,
 } from '../src/game/input/InputBindings';
-import { PlayerId } from '../src/game/config/constants';
 
 describe('InputBindings', () => {
   describe('P1_BINDINGS', () => {

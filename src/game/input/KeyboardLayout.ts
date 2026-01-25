@@ -3,6 +3,9 @@
  * @description Auto-detects keyboard layout and provides appropriate key mappings
  */
 
+/* eslint-disable no-undef */
+/* global navigator */
+
 // =============================================================================
 // Types
 // =============================================================================

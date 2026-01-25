@@ -29,7 +29,12 @@ import {
 /**
  * Callback for meta actions (non-game inputs).
  */
-export type MetaActionCallback = (action: MetaAction, player: PlayerId | null) => void;
+export type MetaActionCallback = (
+  // eslint-disable-next-line no-unused-vars
+  _action: MetaAction,
+  // eslint-disable-next-line no-unused-vars
+  _player: PlayerId | null
+) => void;
 
 /**
  * Per-player input state.
