@@ -1,0 +1,46 @@
+{
+  "name": "mity-fighter",
+  "version": "0.1.0",
+  "description": "Production-grade 2D pixel fighting game built with TypeScript, Phaser 3, and Vite",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src tests tools --ext .ts",
+    "lint:fix": "eslint src tests tools --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"tools/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\" \"tools/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "validate:assets": "npx tsx tools/validate-assets.ts",
+    "validate:all": "npm run lint && npm run test && npm run validate:assets && npm run build",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "phaser",
+    "game",
+    "fighting",
+    "pixel-art",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "prettier": "^3.1.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "phaser": "^3.70.0"
+  }
+}

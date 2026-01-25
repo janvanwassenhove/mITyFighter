@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mITyFighter</title>
+    <script>
+      // GitHub Pages SPA redirect
+      // Redirects 404s back to index.html for client-side routing
+      const pathSegmentsToKeep = 1; // Keep /repo-name/ prefix
+      const location = window.location;
+      location.replace(
+        location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') +
+        location.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        location.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (location.search ? '&' + location.search.slice(1).replace(/&/g, '~and~') : '') +
+        location.hash
+      );
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <h1>mITyFighter</h1>
+      <p>JavaScript is required to play this game.</p>
+      <p><a href="/">Go to homepage</a></p>
+    </noscript>
+  </body>
+</html>
