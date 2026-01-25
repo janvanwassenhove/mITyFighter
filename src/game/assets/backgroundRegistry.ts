@@ -57,6 +57,7 @@ let isLoaded = false;
  */
 export async function loadBackgroundsFromJson(): Promise<void> {
   try {
+    // eslint-disable-next-line no-undef
     const response = await fetch('data/backgrounds.json');
     if (!response.ok) {
       throw new Error(`Failed to load backgrounds.json: ${response.status}`);
@@ -74,6 +75,7 @@ export async function loadBackgroundsFromJson(): Promise<void> {
     }
     
     isLoaded = true;
+    // eslint-disable-next-line no-console
     console.log(`Loaded ${backgroundIds.length} backgrounds from JSON`);
   } catch (error) {
     console.error('Error loading backgrounds from JSON:', error);
@@ -96,6 +98,7 @@ export function isBackgroundRegistryLoaded(): boolean {
 /**
  * Get the background registry object.
  * Note: Returns a read-only view of the dynamically loaded registry.
+ * @returns Read-only background registry
  */
 export function getBackgroundRegistry(): Readonly<Record<string, BackgroundRegistryEntry>> {
   if (!isLoaded) {
@@ -109,13 +112,13 @@ export function getBackgroundRegistry(): Readonly<Record<string, BackgroundRegis
  * Proxies to the dynamic registry.
  */
 export const BACKGROUND_REGISTRY = new Proxy({} as Record<string, BackgroundRegistryEntry>, {
-  get(_, prop: string) {
+  get(_, prop: string): BackgroundRegistryEntry | undefined {
     return backgroundRegistry[prop];
   },
-  ownKeys() {
+  ownKeys(): string[] {
     return backgroundIds;
   },
-  getOwnPropertyDescriptor(_, prop: string) {
+  getOwnPropertyDescriptor(_, prop: string): PropertyDescriptor | undefined {
     if (prop in backgroundRegistry) {
       return {
         enumerable: true,
@@ -125,7 +128,7 @@ export const BACKGROUND_REGISTRY = new Proxy({} as Record<string, BackgroundRegi
     }
     return undefined;
   },
-  has(_, prop: string) {
+  has(_, prop: string): boolean {
     return prop in backgroundRegistry;
   },
 });
@@ -137,7 +140,9 @@ export const BACKGROUND_REGISTRY = new Proxy({} as Record<string, BackgroundRegi
 /** Background ID type - now a string since registry is dynamic */
 export type BackgroundId = string;
 
-/** Get array of all background IDs */
+/** Get array of all background IDs
+ * @returns Array of background IDs
+ */
 export function getBackgroundIds(): readonly string[] {
   return backgroundIds;
 }
@@ -147,22 +152,25 @@ export function getBackgroundIds(): readonly string[] {
  * Proxies to the dynamic IDs array.
  */
 export const BACKGROUND_IDS: readonly string[] = new Proxy([] as string[], {
-  get(_, prop) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get(_, prop): any {
     if (prop === 'length') return backgroundIds.length;
-    if (prop === Symbol.iterator) return () => backgroundIds[Symbol.iterator]();
+    if (prop === Symbol.iterator) return (): Iterator<string> => backgroundIds[Symbol.iterator]();
     if (typeof prop === 'string' && !isNaN(Number(prop))) {
       return backgroundIds[Number(prop)];
     }
-    if (prop === 'indexOf') return (id: string) => backgroundIds.indexOf(id);
-    if (prop === 'includes') return (id: string) => backgroundIds.includes(id);
-    if (prop === 'map') return <T>(fn: (id: string, index: number, array: string[]) => T) => backgroundIds.map(fn);
-    if (prop === 'forEach') return (fn: (id: string, index: number, array: string[]) => void) => backgroundIds.forEach(fn);
-    if (prop === 'filter') return (fn: (id: string, index: number, array: string[]) => boolean) => backgroundIds.filter(fn);
+    if (prop === 'indexOf') return (id: string): number => backgroundIds.indexOf(id);
+    if (prop === 'includes') return (id: string): boolean => backgroundIds.includes(id);
+    if (prop === 'map') return <T>(fn: (_id: string) => T): T[] => backgroundIds.map(fn);
+    if (prop === 'forEach') return (fn: (_id: string) => void): void => backgroundIds.forEach(fn);
+    if (prop === 'filter') return (fn: (_id: string) => boolean): string[] => backgroundIds.filter(fn);
     return undefined;
   },
 });
 
-/** Get number of registered backgrounds */
+/** Get number of registered backgrounds
+ * @returns Number of backgrounds
+ */
 export function getBackgroundCount(): number {
   return backgroundIds.length;
 }

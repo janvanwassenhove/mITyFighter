@@ -392,8 +392,10 @@ export class StageSelectScene extends Phaser.Scene {
         object-position: center bottom;
       `;
 
-      video.onloadedmetadata = () => {
-        video.play().catch((e) => logger.warn('Video autoplay blocked:', e));
+      video.onloadedmetadata = (): void => {
+        video.play().catch((e): void => {
+          logger.warn('Video autoplay blocked:', e);
+        });
       };
 
       this.previewElement = video;

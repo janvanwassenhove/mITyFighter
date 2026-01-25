@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { updateFighter } from '../src/game/sim/CombatSystem';
 import {
   createFighterState,

@@ -60,6 +60,7 @@ let isLoaded = false;
  */
 export async function loadAudioFromJson(): Promise<void> {
   try {
+    // eslint-disable-next-line no-undef
     const response = await fetch('data/audio.json');
     if (!response.ok) {
       throw new Error(`Failed to load audio.json: ${response.status}`);
@@ -77,6 +78,7 @@ export async function loadAudioFromJson(): Promise<void> {
     }
     
     isLoaded = true;
+    // eslint-disable-next-line no-console
     console.log(`Loaded ${audioIds.length} audio entries from JSON`);
   } catch (error) {
     console.error('Error loading audio from JSON:', error);
@@ -112,6 +114,7 @@ export function getAudioByCategory(category: AudioRegistryEntry['category']): Au
 
 /**
  * Get the audio registry object.
+ * @returns Read-only audio registry
  */
 export function getAudioRegistry(): Readonly<Record<string, AudioRegistryEntry>> {
   return audioRegistry;
@@ -119,6 +122,7 @@ export function getAudioRegistry(): Readonly<Record<string, AudioRegistryEntry>>
 
 /**
  * Get all audio IDs.
+ * @returns Array of audio IDs
  */
 export function getAudioIds(): readonly string[] {
   return audioIds;
@@ -133,13 +137,13 @@ export function getAudioIds(): readonly string[] {
  * Now dynamically populated from JSON, but maintains the same interface.
  */
 export const AUDIO_KEYS = new Proxy({} as Record<string, string>, {
-  get(_, prop: string) {
+  get(_, prop: string): string {
     return audioRegistry[prop]?.id ?? prop;
   },
-  ownKeys() {
+  ownKeys(): string[] {
     return audioIds;
   },
-  getOwnPropertyDescriptor(_, prop: string) {
+  getOwnPropertyDescriptor(_, prop: string): PropertyDescriptor | undefined {
     const entry = audioRegistry[prop];
     if (entry) {
       return {
@@ -150,7 +154,7 @@ export const AUDIO_KEYS = new Proxy({} as Record<string, string>, {
     }
     return undefined;
   },
-  has(_, prop: string) {
+  has(_, prop: string): boolean {
     return prop in audioRegistry;
   },
 });

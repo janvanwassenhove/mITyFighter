@@ -132,6 +132,103 @@ npm run build             # TypeScript compilation
 - ❌ Forgetting to update registries when adding assets
 - ❌ Skipping validation checks
 
+## ESLint & Code Quality Rules
+
+**CRITICAL**: All code changes MUST pass `npm run lint` before committing. Follow these rules:
+
+### Import Order
+- **Group imports**: External packages → Type imports → Internal modules
+- **Sort alphabetically** within each group
+- **Add blank line** between import groups
+
+Example:
+```typescript
+import Phaser from 'phaser';
+
+import type { FighterId } from '../assets/fighterRegistry';
+import { getAudioManager } from '../audio/AudioManager';
+import { GAME_WIDTH } from '../config/constants';
+```
+
+### Function Return Types
+- **Always specify return types** explicitly on all functions
+- Don't rely on type inference for public APIs
+- Arrow functions need explicit types too
+
+Example:
+```typescript
+// ✅ Good
+export function getIds(): readonly string[] { ... }
+const handler = (e: Event): void => { ... };
+
+// ❌ Bad  
+export function getIds() { ... }
+const handler = (e) => { ... };
+```
+
+### Browser Globals (fetch, console)
+- **fetch**: Add `// eslint-disable-next-line no-undef` before usage
+- **console.log/warn/error**: Add `// eslint-disable-next-line no-console` OR use `logger` utility instead
+
+Example:
+```typescript
+// ✅ Good - Disable ESLint for fetch
+// eslint-disable-next-line no-undef
+const response = await fetch('data/fighters.json');
+
+// ✅ Good - Use logger instead of console
+logger.info('Loaded data');
+
+// ❌ Bad - Raw console or fetch without disable comment
+console.log('Loaded data');
+const response = await fetch('...');
+```
+
+### Unused Parameters
+- **Remove unused parameters** from function signatures
+- Use `_` prefix if parameter is required by interface but unused
+- **Note**: The ESLint config has `argsIgnorePattern: '^_'` which allows `_param` naming
+
+Example:
+```typescript
+// ✅ Good - Only used parameters
+if (prop === 'map') return <T>(fn: (id: string) => T) => ids.map(fn);
+
+// ✅ Good - Unused parameter with underscore prefix
+if (prop === 'map') return <T>(fn: (_id: string) => T) => ids.map(fn);
+
+// ❌ Bad - Unused parameters without underscore
+if (prop === 'map') return <T>(fn: (id: string, index: number, array: string[]) => T) => ids.map(fn);
+```
+
+### TypeScript Strict Mode
+- **Never use `any`** without `// eslint-disable-next-line @typescript-eslint/no-explicit-any`
+- Prefer `unknown` or proper types
+- Document why `any` is necessary if used
+
+Example:
+```typescript
+// ✅ Good - Disable when necessary with comment
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(container as any).customProp = value;
+
+// ❌ Bad - Uncontrolled any
+const data: any = fetchData();
+```
+
+### JSDoc Comments
+- Add `@returns` tag to all exported functions
+- Describe what the function returns
+
+Example:
+```typescript
+/**
+ * Get all fighter IDs.
+ * @returns Array of fighter IDs
+ */
+export function getFighterIds(): readonly string[] { ... }
+```
+
 ## Testing Requirements
 
 - New registry entries → validation tests

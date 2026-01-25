@@ -146,6 +146,13 @@
       "description": "A frozen airport runway where the plane is ready, the crew is working hard, and two fighters decide to settle their differences next to the landing gear like it's a perfectly normal travel activity.",
       "file": "gate_13_boarding_call_violence.mp4",
       "type": "video"
+    },
+    {
+    "id": "chungking_pig_traffic_diplomacy_zone",
+    "displayName": "Chung-King Pig Traffic Diplomacy Zone",
+    "description": "A lively city street where traffic is merely a suggestion, everyone sells something you absolutely don’t need, and the pigs run the intersection with more authority than any law ever dared to.",
+    "file": "chungking_pig_traffic_diplomacy_zone.gif",
+    "type": "gif"
     }
   ]
 }

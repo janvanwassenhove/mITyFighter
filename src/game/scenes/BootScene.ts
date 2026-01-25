@@ -6,8 +6,8 @@
 
 import Phaser from 'phaser';
 
-import { loadFightersFromJson } from '../assets/fighterRegistry';
 import { loadBackgroundsFromJson } from '../assets/backgroundRegistry';
+import { loadFightersFromJson } from '../assets/fighterRegistry';
 import { loadAudioFromJson } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
 import { detectKeyboardLayout } from '../input/KeyboardLayout';
@@ -85,7 +85,10 @@ export class BootScene extends Phaser.Scene {
   private setupInputDefaults(): void {
     // Prevent context menu on right-click
     if (this.game.canvas) {
-      this.game.canvas.oncontextmenu = (e) => e.preventDefault();
+      this.game.canvas.oncontextmenu = (e): boolean => {
+        e.preventDefault();
+        return false;
+      };
     }
 
     // Prevent default browser behavior for game keys

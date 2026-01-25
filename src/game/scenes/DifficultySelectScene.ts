@@ -5,11 +5,11 @@
 
 import Phaser from 'phaser';
 
+import type { FighterId } from '../assets/fighterRegistry';
 import { getAudioManager } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
 import type { AIDifficulty } from '../sim/FightingAI';
 import { logger } from '../utils/logger';
-import type { FighterId } from '../assets/fighterRegistry';
 
 // =============================================================================
 // Types
@@ -174,6 +174,7 @@ export class DifficultySelectScene extends Phaser.Scene {
       container.add(descText);
 
       // Store difficulty for reference
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (container as any).difficulty = difficulty;
 
       // Make interactive for touch/click

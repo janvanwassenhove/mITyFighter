@@ -257,10 +257,12 @@ export class FightScene extends Phaser.Scene {
         object-position: center bottom;
       `;
 
-      video.onloadedmetadata = () => {
+      video.onloadedmetadata = (): void => {
         this.backgroundWidth = video.videoWidth * PARALLAX_EXTRA;
         // Force play (some browsers block autoplay)
-        video.play().catch((e) => logger.warn('Video autoplay blocked:', e));
+        video.play().catch((e): void => {
+          logger.warn('Video autoplay blocked:', e);
+        });
       };
 
       this.backgroundDomElement = video;
@@ -280,7 +282,7 @@ export class FightScene extends Phaser.Scene {
         object-position: center bottom;
       `;
 
-      img.onload = () => {
+      img.onload = (): void => {
         this.backgroundWidth = img.naturalWidth * PARALLAX_EXTRA;
       };
 

@@ -67,6 +67,7 @@ let isLoaded = false;
  */
 export async function loadFightersFromJson(): Promise<void> {
   try {
+    // eslint-disable-next-line no-undef
     const response = await fetch('data/fighters.json');
     if (!response.ok) {
       throw new Error(`Failed to load fighters.json: ${response.status}`);
@@ -84,6 +85,7 @@ export async function loadFightersFromJson(): Promise<void> {
     }
     
     isLoaded = true;
+    // eslint-disable-next-line no-console
     console.log(`Loaded ${fighterIds.length} fighters from JSON`);
   } catch (error) {
     console.error('Error loading fighters from JSON:', error);
@@ -106,6 +108,7 @@ export function isFighterRegistryLoaded(): boolean {
 /**
  * Get the fighter registry object.
  * Note: Returns a read-only view of the dynamically loaded registry.
+ * @returns Read-only fighter registry
  */
 export function getFighterRegistry(): Readonly<Record<string, FighterRegistryEntry>> {
   if (!isLoaded) {
@@ -119,13 +122,13 @@ export function getFighterRegistry(): Readonly<Record<string, FighterRegistryEnt
  * Proxies to the dynamic registry.
  */
 export const FIGHTER_REGISTRY = new Proxy({} as Record<string, FighterRegistryEntry>, {
-  get(_, prop: string) {
+  get(_, prop: string): FighterRegistryEntry | undefined {
     return fighterRegistry[prop];
   },
-  ownKeys() {
+  ownKeys(): string[] {
     return fighterIds;
   },
-  getOwnPropertyDescriptor(_, prop: string) {
+  getOwnPropertyDescriptor(_, prop: string): PropertyDescriptor | undefined {
     if (prop in fighterRegistry) {
       return {
         enumerable: true,
@@ -135,7 +138,7 @@ export const FIGHTER_REGISTRY = new Proxy({} as Record<string, FighterRegistryEn
     }
     return undefined;
   },
-  has(_, prop: string) {
+  has(_, prop: string): boolean {
     return prop in fighterRegistry;
   },
 });
@@ -147,7 +150,9 @@ export const FIGHTER_REGISTRY = new Proxy({} as Record<string, FighterRegistryEn
 /** Fighter ID type - now a string since registry is dynamic */
 export type FighterId = string;
 
-/** Get array of all fighter IDs */
+/** Get array of all fighter IDs
+ * @returns Array of fighter IDs
+ */
 export function getFighterIds(): readonly string[] {
   return fighterIds;
 }
@@ -157,22 +162,25 @@ export function getFighterIds(): readonly string[] {
  * Proxies to the dynamic IDs array.
  */
 export const FIGHTER_IDS: readonly string[] = new Proxy([] as string[], {
-  get(_, prop) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get(_, prop): any {
     if (prop === 'length') return fighterIds.length;
-    if (prop === Symbol.iterator) return () => fighterIds[Symbol.iterator]();
+    if (prop === Symbol.iterator) return (): Iterator<string> => fighterIds[Symbol.iterator]();
     if (typeof prop === 'string' && !isNaN(Number(prop))) {
       return fighterIds[Number(prop)];
     }
-    if (prop === 'indexOf') return (id: string) => fighterIds.indexOf(id);
-    if (prop === 'includes') return (id: string) => fighterIds.includes(id);
-    if (prop === 'map') return <T>(fn: (id: string, index: number, array: string[]) => T) => fighterIds.map(fn);
-    if (prop === 'forEach') return (fn: (id: string, index: number, array: string[]) => void) => fighterIds.forEach(fn);
-    if (prop === 'filter') return (fn: (id: string, index: number, array: string[]) => boolean) => fighterIds.filter(fn);
+    if (prop === 'indexOf') return (id: string): number => fighterIds.indexOf(id);
+    if (prop === 'includes') return (id: string): boolean => fighterIds.includes(id);
+    if (prop === 'map') return <T>(fn: (_id: string) => T): T[] => fighterIds.map(fn);
+    if (prop === 'forEach') return (fn: (_id: string) => void): void => fighterIds.forEach(fn);
+    if (prop === 'filter') return (fn: (_id: string) => boolean): string[] => fighterIds.filter(fn);
     return undefined;
   },
 });
 
-/** Get number of registered fighters */
+/** Get number of registered fighters
+ * @returns Number of fighters
+ */
 export function getFighterCount(): number {
   return fighterIds.length;
 }
