@@ -106,7 +106,28 @@ export const INPUT_CONFIG = {
 |--------|-----|-------|
 | Toggle Debug | F1 | Shows overlay |
 | Cycle Background | Z/C | Z = prev, C = next |
-| Pause (future) | Escape | Not implemented |
+| Pause/Menu | Escape | Opens pause menu in fight, goes back in menus |
+
+## Navigation Controls
+
+### ESC Key Behavior
+
+Pressing ESC provides consistent back/menu navigation throughout the game:
+
+| Scene | ESC Action |
+|-------|------------|
+| TitleScene | No action (start screen) |
+| ModeSelectScene | Return to TitleScene |
+| CharacterSelectScene | Return to ModeSelectScene |
+| StageSelectScene | Return to CharacterSelectScene |
+| FightScene | Open pause menu (Resume/Quit options) |
+| StorySelectScene | Return to ModeSelectScene |
+| DifficultySelectScene | Return to StorySelectScene |
+| StoryModeScene | Return to ModeSelectScene |
+
+### Mobile Back Button
+
+On touch devices, a back button (◀ BACK) appears in the top-left corner of each scene for navigation. In FightScene, a pause button (⏸) is shown instead, which opens the pause menu.
 
 ## InputFrame Format
 

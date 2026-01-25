@@ -6,15 +6,20 @@
 
 import Phaser from 'phaser';
 
+import { loadFightersFromJson } from '../assets/fighterRegistry';
+import { loadBackgroundsFromJson } from '../assets/backgroundRegistry';
+import { loadAudioFromJson } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
 import { detectKeyboardLayout } from '../input/KeyboardLayout';
 import { logger } from '../utils/logger';
 
 /**
  * Boot scene - first scene to run.
- * Performs minimal setup and shows loading indicator.
+ * Performs minimal setup, loads JSON registries, and shows loading indicator.
  */
 export class BootScene extends Phaser.Scene {
+  private loadingText: Phaser.GameObjects.Text | null = null;
+
   constructor() {
     super({ key: 'BootScene' });
   }
@@ -35,14 +40,43 @@ export class BootScene extends Phaser.Scene {
     this.setupInputDefaults();
 
     // Create a simple loading text
-    this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'Loading...', {
+    this.loadingText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'Loading registries...', {
       fontFamily: 'monospace',
       fontSize: '24px',
       color: '#ffffff',
     }).setOrigin(0.5);
 
-    // Proceed to preload scene
-    this.scene.start('PreloadScene');
+    // Load JSON registries before proceeding to PreloadScene
+    this.loadJsonRegistries();
+  }
+
+  /**
+   * Load all JSON registries (fighters, backgrounds, audio).
+   */
+  private async loadJsonRegistries(): Promise<void> {
+    try {
+      logger.info('Loading JSON registries...');
+      
+      // Load all registries in parallel
+      await Promise.all([
+        loadFightersFromJson(),
+        loadBackgroundsFromJson(),
+        loadAudioFromJson(),
+      ]);
+      
+      logger.info('JSON registries loaded successfully');
+      
+      // Proceed to preload scene
+      this.scene.start('PreloadScene');
+    } catch (error) {
+      logger.error('Failed to load JSON registries:', error);
+      
+      // Show error message
+      if (this.loadingText) {
+        this.loadingText.setText('Failed to load game data.\nPlease refresh the page.');
+        this.loadingText.setColor('#ff4444');
+      }
+    }
   }
 
   /**

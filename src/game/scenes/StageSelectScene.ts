@@ -49,6 +49,7 @@ export class StageSelectScene extends Phaser.Scene {
 
   /** UI elements */
   private stageNameText!: Phaser.GameObjects.Text;
+  private stageDescriptionText!: Phaser.GameObjects.Text;
   private counterText!: Phaser.GameObjects.Text;
 
   /** Touch mode */
@@ -63,7 +64,11 @@ export class StageSelectScene extends Phaser.Scene {
     confirm: Phaser.Input.Keyboard.Key;
     altLeft: Phaser.Input.Keyboard.Key;
     altRight: Phaser.Input.Keyboard.Key;
+    escape: Phaser.Input.Keyboard.Key;
   };
+
+  /** Mobile back button */
+  private backButton?: Phaser.GameObjects.Container;
 
   constructor() {
     super({ key: 'StageSelectScene' });
@@ -92,6 +97,11 @@ export class StageSelectScene extends Phaser.Scene {
     this.createUI();
     this.setupInput();
     this.updateStagePreview();
+
+    // Add mobile back button
+    if (this.isTouchMode) {
+      this.createBackButton();
+    }
   }
 
   /** Create DOM-based preview container for animated backgrounds */
@@ -148,11 +158,11 @@ export class StageSelectScene extends Phaser.Scene {
     // Dark overlay at bottom for stage name and controls
     const bottomOverlay = this.add.graphics();
     bottomOverlay.fillStyle(0x000000, 0.7);
-    bottomOverlay.fillRect(0, GAME_HEIGHT - 150, GAME_WIDTH, 150);
+    bottomOverlay.fillRect(0, GAME_HEIGHT - 200, GAME_WIDTH, 200);
 
     // Left arrow
     this.leftArrow = this.add
-      .text(100, GAME_HEIGHT - 75, '◀', {
+      .text(100, GAME_HEIGHT - 100, '◀', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '64px',
         color: '#ffcc00',
@@ -161,7 +171,7 @@ export class StageSelectScene extends Phaser.Scene {
 
     // Right arrow
     this.rightArrow = this.add
-      .text(GAME_WIDTH - 100, GAME_HEIGHT - 75, '▶', {
+      .text(GAME_WIDTH - 100, GAME_HEIGHT - 100, '▶', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '64px',
         color: '#ffcc00',
@@ -177,7 +187,7 @@ export class StageSelectScene extends Phaser.Scene {
     }
 
     // Stage name
-    this.stageNameText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 90, '', {
+    this.stageNameText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 170, '', {
       fontFamily: 'Impact, sans-serif',
       fontSize: '42px',
       color: '#ffffff',
@@ -186,8 +196,18 @@ export class StageSelectScene extends Phaser.Scene {
     });
     this.stageNameText.setOrigin(0.5);
 
+    // Stage description
+    this.stageDescriptionText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 115, '', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '18px',
+      color: '#cccccc',
+      align: 'center',
+      wordWrap: { width: GAME_WIDTH - 250 },
+    });
+    this.stageDescriptionText.setOrigin(0.5);
+
     // Stage counter (e.g., "3 / 19")
-    this.counterText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 45, '', {
+    this.counterText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 60, '', {
       fontFamily: 'Arial, sans-serif',
       fontSize: '24px',
       color: '#aaaaaa',
@@ -201,7 +221,7 @@ export class StageSelectScene extends Phaser.Scene {
     this.add
       .text(
         GAME_WIDTH / 2,
-        GAME_HEIGHT - 15,
+        GAME_HEIGHT - 25,
         instructions,
         {
           fontFamily: 'Arial, sans-serif',
@@ -249,7 +269,44 @@ export class StageSelectScene extends Phaser.Scene {
       altLeft: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
       altRight: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
       confirm: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER),
+      escape: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
     };
+  }
+
+  /** Create mobile back button */
+  private createBackButton(): void {
+    this.backButton = this.add.container(50, 40);
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x333344, 0.9);
+    bg.fillRoundedRect(-35, -20, 70, 40, 8);
+    bg.lineStyle(2, 0x666688);
+    bg.strokeRoundedRect(-35, -20, 70, 40, 8);
+    this.backButton.add(bg);
+
+    // Back arrow and text
+    const text = this.add.text(0, 0, '◀ BACK', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px',
+      color: '#ffffff',
+    });
+    text.setOrigin(0.5);
+    this.backButton.add(text);
+
+    // Make interactive
+    this.backButton.setSize(70, 40);
+    this.backButton.setInteractive({ useHandCursor: true });
+    this.backButton.on('pointerdown', () => this.goBack());
+    this.backButton.setDepth(200);
+  }
+
+  /** Go back to character select */
+  private goBack(): void {
+    this.cleanupDOM();
+    this.scene.start('CharacterSelectScene', {
+      gameMode: this.gameMode,
+    });
   }
 
   update(): void {
@@ -272,6 +329,11 @@ export class StageSelectScene extends Phaser.Scene {
     // Confirm selection
     if (Phaser.Input.Keyboard.JustDown(this.keys.confirm)) {
       this.selectStage();
+    }
+
+    // Go back
+    if (Phaser.Input.Keyboard.JustDown(this.keys.escape)) {
+      this.goBack();
     }
   }
 
@@ -302,10 +364,13 @@ export class StageSelectScene extends Phaser.Scene {
     if (!stageId) return;
 
     const bg = BACKGROUND_REGISTRY[stageId];
+    if (!bg) return;
+
     const path = `backgrounds/${bg.file}`;
 
     // Update text
     this.stageNameText.setText(bg.displayName);
+    this.stageDescriptionText.setText(bg.description ?? '');
     this.counterText.setText(`${this.stageIndex + 1} / ${BACKGROUND_IDS.length}`);
 
     // Create preview element

@@ -1,0 +1,368 @@
+{
+  "audio": [
+    {
+      "id": "1",
+      "displayName": "One",
+      "description": "Announcer countdown: One",
+      "file": "1.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "2",
+      "displayName": "Two",
+      "description": "Announcer countdown: Two",
+      "file": "2.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "3",
+      "displayName": "Three",
+      "description": "Announcer countdown: Three",
+      "file": "3.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "4",
+      "displayName": "Four",
+      "description": "Announcer countdown: Four",
+      "file": "4.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "5",
+      "displayName": "Five",
+      "description": "Announcer countdown: Five",
+      "file": "5.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "6",
+      "displayName": "Six",
+      "description": "Announcer countdown: Six",
+      "file": "6.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "7",
+      "displayName": "Seven",
+      "description": "Announcer countdown: Seven",
+      "file": "7.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "8",
+      "displayName": "Eight",
+      "description": "Announcer countdown: Eight",
+      "file": "8.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "9",
+      "displayName": "Nine",
+      "description": "Announcer countdown: Nine",
+      "file": "9.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "10",
+      "displayName": "Ten",
+      "description": "Announcer countdown: Ten",
+      "file": "10.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "arcade_mode",
+      "displayName": "Arcade Mode",
+      "description": "Announcer: Arcade Mode selection",
+      "file": "arcade_mode.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "battle_mode",
+      "displayName": "Battle Mode",
+      "description": "Announcer: Battle Mode selection",
+      "file": "battle_mode.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "begin",
+      "displayName": "Begin",
+      "description": "Announcer: Match begin callout",
+      "file": "begin.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "championship_mode",
+      "displayName": "Championship Mode",
+      "description": "Announcer: Championship Mode selection",
+      "file": "championship_mode.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "choose_your_character",
+      "displayName": "Choose Your Character",
+      "description": "Announcer: Character selection prompt",
+      "file": "choose_your_character.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "combo",
+      "displayName": "Combo",
+      "description": "Announcer: Combo achieved callout",
+      "file": "combo.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "combo_breaker",
+      "displayName": "Combo Breaker",
+      "description": "Announcer: Combo breaker callout",
+      "file": "combo_breaker.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "deathmatch",
+      "displayName": "Deathmatch",
+      "description": "Announcer: Deathmatch mode selection",
+      "file": "deathmatch.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "fight",
+      "displayName": "Fight",
+      "description": "Announcer: Fight start callout",
+      "file": "fight.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "final_round",
+      "displayName": "Final Round",
+      "description": "Announcer: Final round announcement",
+      "file": "final_round.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "flawless_victory",
+      "displayName": "Flawless Victory",
+      "description": "Announcer: Flawless victory callout",
+      "file": "flawless_victory.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "game_over",
+      "displayName": "Game Over",
+      "description": "Announcer: Game over callout",
+      "file": "game_over.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "its_a_tie",
+      "displayName": "It's a Tie",
+      "description": "Announcer: Tie match callout",
+      "file": "it's_a_tie.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "kill_her",
+      "displayName": "Kill Her",
+      "description": "Announcer: Finish her callout",
+      "file": "kill_her.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "kill_him",
+      "displayName": "Kill Him",
+      "description": "Announcer: Finish him callout",
+      "file": "kill_him.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "kill_it",
+      "displayName": "Kill It",
+      "description": "Announcer: Finish it callout",
+      "file": "kill_it.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "loser",
+      "displayName": "Loser",
+      "description": "Announcer: Loser callout",
+      "file": "loser.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "multi_kill",
+      "displayName": "Multi Kill",
+      "description": "Announcer: Multi-kill achievement callout",
+      "file": "multi_kill.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "player_1",
+      "displayName": "Player One",
+      "description": "Announcer: Player 1 identifier",
+      "file": "player_1.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "player_2",
+      "displayName": "Player Two",
+      "description": "Announcer: Player 2 identifier",
+      "file": "player_2.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "prepare_yourself",
+      "displayName": "Prepare Yourself",
+      "description": "Announcer: Pre-fight warning",
+      "file": "prepare_yourself.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "ready",
+      "displayName": "Ready",
+      "description": "Announcer: Ready callout",
+      "file": "ready.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "round_1",
+      "displayName": "Round 1",
+      "description": "Announcer: Round 1 announcement",
+      "file": "round_1.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "round_2",
+      "displayName": "Round 2",
+      "description": "Announcer: Round 2 announcement",
+      "file": "round_2.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "round_3",
+      "displayName": "Round 3",
+      "description": "Announcer: Round 3 announcement",
+      "file": "round_3.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "round_4",
+      "displayName": "Round 4",
+      "description": "Announcer: Round 4 announcement",
+      "file": "round_4.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "round_5",
+      "displayName": "Round 5",
+      "description": "Announcer: Round 5 announcement",
+      "file": "round_5.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "story_mode",
+      "displayName": "Story Mode",
+      "description": "Announcer: Story Mode selection",
+      "file": "story_mode.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "sudden_death",
+      "displayName": "Sudden Death",
+      "description": "Announcer: Sudden death round announcement",
+      "file": "sudden_death.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "survival_mode",
+      "displayName": "Survival Mode",
+      "description": "Announcer: Survival Mode selection",
+      "file": "survival_mode.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "tie",
+      "displayName": "Tie",
+      "description": "Announcer: Tie result callout",
+      "file": "tie.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "tie_breaker",
+      "displayName": "Tie Breaker",
+      "description": "Announcer: Tie breaker round announcement",
+      "file": "tie_breaker.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "time",
+      "displayName": "Time",
+      "description": "Announcer: Time up callout",
+      "file": "time.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "winner",
+      "displayName": "Winner",
+      "description": "Announcer: Winner announcement",
+      "file": "winner.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "you_lose",
+      "displayName": "You Lose",
+      "description": "Announcer: Loss notification",
+      "file": "you_lose.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "you_win",
+      "displayName": "You Win",
+      "description": "Announcer: Win notification",
+      "file": "you_win.ogg",
+      "category": "announcer"
+    },
+    {
+      "id": "impact_1",
+      "displayName": "Impact 1",
+      "description": "Combat hit impact sound - light hit",
+      "file": "impact_1.mp3",
+      "category": "impact"
+    },
+    {
+      "id": "impact_2",
+      "displayName": "Impact 2",
+      "description": "Combat hit impact sound - medium hit",
+      "file": "impact_2.mp3",
+      "category": "impact"
+    },
+    {
+      "id": "impact_3",
+      "displayName": "Impact 3",
+      "description": "Combat hit impact sound - heavy hit",
+      "file": "impact_3.mp3",
+      "category": "impact"
+    },
+    {
+      "id": "impact_4",
+      "displayName": "Impact 4",
+      "description": "Combat hit impact sound - special hit",
+      "file": "impact_4.mp3",
+      "category": "impact"
+    },
+    {
+      "id": "game_background_sound_1",
+      "displayName": "Battle Theme 1",
+      "description": "Background music track for combat - intense action theme",
+      "file": "game_background_sound_1.mp3",
+      "category": "music"
+    },
+    {
+      "id": "game_background_sound_2",
+      "displayName": "Battle Theme 2",
+      "description": "Background music track for combat - epic orchestral theme",
+      "file": "game_background_sound_2.mp3",
+      "category": "music"
+    }
+  ]
+}

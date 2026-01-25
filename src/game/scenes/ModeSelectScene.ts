@@ -92,11 +92,42 @@ export class ModeSelectScene extends Phaser.Scene {
     );
     instructions.setOrigin(0.5);
 
+    // Create mobile back button
+    this.createBackButton();
+
     // Setup input
     this.setupInput();
 
     // Initial update
     this.updateSelection();
+  }
+
+  /** Create mobile back button */
+  private createBackButton(): void {
+    const backButton = this.add.container(50, 40);
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x333344, 0.9);
+    bg.fillRoundedRect(-35, -20, 70, 40, 8);
+    bg.lineStyle(2, 0x666688);
+    bg.strokeRoundedRect(-35, -20, 70, 40, 8);
+    backButton.add(bg);
+
+    // Back arrow and text
+    const text = this.add.text(0, 0, '◀ BACK', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px',
+      color: '#ffffff',
+    });
+    text.setOrigin(0.5);
+    backButton.add(text);
+
+    // Make interactive
+    backButton.setSize(70, 40);
+    backButton.setInteractive({ useHandCursor: true });
+    backButton.on('pointerdown', () => this.scene.start('TitleScene'));
+    backButton.setDepth(200);
   }
 
   /** Create animated background */
@@ -262,6 +293,9 @@ export class ModeSelectScene extends Phaser.Scene {
   private setupInput(): void {
     const keyboard = this.input.keyboard!;
 
+    // Remove any existing listeners to prevent duplicates on scene restart
+    keyboard.removeAllListeners();
+
     keyboard.on('keydown-LEFT', () => this.moveSelection(-1));
     keyboard.on('keydown-RIGHT', () => this.moveSelection(1));
     keyboard.on('keydown-A', () => this.moveSelection(-1));
@@ -277,7 +311,8 @@ export class ModeSelectScene extends Phaser.Scene {
 
     // Click support
     this.modeButtons.forEach((btn, index) => {
-      const bg = btn.getAt(0) as Phaser.GameObjects.Rectangle;
+      const bg = btn.getAt(0) as Phaser.GameObjects.Rectangle | undefined;
+      if (!bg) return;
       bg.setInteractive({ useHandCursor: true });
       bg.on('pointerover', () => {
         this.selectedIndex = index;
@@ -304,7 +339,8 @@ export class ModeSelectScene extends Phaser.Scene {
   private updateSelection(): void {
     // Update button visuals
     this.modeButtons.forEach((btn, index) => {
-      const bg = btn.getAt(0) as Phaser.GameObjects.Rectangle;
+      const bg = btn.getAt(0) as Phaser.GameObjects.Rectangle | undefined;
+      if (!bg) return;
       const isSelected = index === this.selectedIndex;
       const isFeatured = index === 0; // Story mode is index 0
 

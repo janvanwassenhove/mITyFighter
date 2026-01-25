@@ -13,7 +13,7 @@ import { BACKGROUND_REGISTRY } from '../assets/backgroundRegistry';
 import type { FighterId } from '../assets/fighterRegistry';
 import { FIGHTER_REGISTRY } from '../assets/fighterRegistry';
 import { getAudioManager } from '../audio/AudioManager';
-import { GAME_WIDTH, PlayerId } from '../config/constants';
+import { GAME_WIDTH, GAME_HEIGHT, PlayerId } from '../config/constants';
 import { getP1PhaserKeyCodes } from '../input/KeyboardLayout';
 import {
   TouchControls,
@@ -126,7 +126,16 @@ export class FightScene extends Phaser.Scene {
     p2Attack1: Phaser.Input.Keyboard.Key;
     p2Attack2: Phaser.Input.Keyboard.Key;
     p2Block: Phaser.Input.Keyboard.Key;
+    escape: Phaser.Input.Keyboard.Key;
   };
+
+  // Pause menu
+  private isPaused = false;
+  private pauseMenu?: Phaser.GameObjects.Container;
+  private pauseButton?: Phaser.GameObjects.Container;
+  private pauseMenuButtons: Phaser.GameObjects.Container[] = [];
+  private pauseMenuSelectedIndex = 0;
+  private pauseMenuCallbacks: (() => void)[] = [];
 
   // Touch controls
   private touchControlsManager: TouchControlsManager | null = null;
@@ -163,6 +172,7 @@ export class FightScene extends Phaser.Scene {
     this.roundTimer = this.matchConfig.roundTimeSeconds;
     this.p1PlayerState = { roundsWon: 0, health: 100 };
     this.p2PlayerState = { roundsWon: 0, health: 100 };
+    this.isPaused = false;
   }
 
   create(): void {
@@ -172,6 +182,9 @@ export class FightScene extends Phaser.Scene {
 
     // Initialize audio manager for this scene
     getAudioManager().init(this);
+
+    // Start background music
+    getAudioManager().playMusic();
 
     this.createBackground();
     this.createFighters();
@@ -281,6 +294,10 @@ export class FightScene extends Phaser.Scene {
     const p1Fighter = FIGHTER_REGISTRY[this.p1FighterId];
     const p2Fighter = FIGHTER_REGISTRY[this.p2FighterId];
 
+    if (!p1Fighter || !p2Fighter) {
+      throw new Error('Fighter not found in registry');
+    }
+
     // Initialize runtime states
     this.p1State = createFighterState(200, 1);
     this.p2State = createFighterState(GAME_WIDTH - 200, -1);
@@ -340,8 +357,10 @@ export class FightScene extends Phaser.Scene {
 
   /** Create UI elements */
   private createUI(): void {
-    const p1Name = FIGHTER_REGISTRY[this.p1FighterId].displayName;
-    const p2Name = FIGHTER_REGISTRY[this.p2FighterId].displayName;
+    const p1Fighter = FIGHTER_REGISTRY[this.p1FighterId];
+    const p2Fighter = FIGHTER_REGISTRY[this.p2FighterId];
+    const p1Name = p1Fighter?.displayName ?? 'Player 1';
+    const p2Name = p2Fighter?.displayName ?? 'Player 2';
 
     this.healthBarUI = new HealthBarUI(this);
     this.healthBarUI.setNames(p1Name, p2Name);
@@ -375,7 +394,13 @@ export class FightScene extends Phaser.Scene {
       p2Attack1: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_ONE),
       p2Attack2: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO),
       p2Block: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_THREE),
+
+      // Pause/Menu
+      escape: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
     };
+
+    // Create mobile pause button
+    this.createPauseButton();
 
     // Setup touch controls for mobile devices
     this.setupTouchControls();
@@ -527,11 +552,13 @@ export class FightScene extends Phaser.Scene {
 
     if (p1Won) {
       this.p1PlayerState.roundsWon++;
-      const p1Name = FIGHTER_REGISTRY[this.p1FighterId].displayName;
+      const p1Fighter = FIGHTER_REGISTRY[this.p1FighterId];
+      const p1Name = p1Fighter?.displayName ?? 'Player 1';
       this.announcerUI.showWins(p1Name);
     } else if (p2Won) {
       this.p2PlayerState.roundsWon++;
-      const p2Name = FIGHTER_REGISTRY[this.p2FighterId].displayName;
+      const p2Fighter = FIGHTER_REGISTRY[this.p2FighterId];
+      const p2Name = p2Fighter?.displayName ?? 'Player 2';
       this.announcerUI.showWins(p2Name);
     } else {
       this.announcerUI.showDraw();
@@ -562,9 +589,11 @@ export class FightScene extends Phaser.Scene {
     this.gamePhase = GamePhase.MATCH_END;
 
     const p1Won = this.p1PlayerState.roundsWon >= this.matchConfig.roundsToWin;
+    const p1Fighter = FIGHTER_REGISTRY[this.p1FighterId];
+    const p2Fighter = FIGHTER_REGISTRY[this.p2FighterId];
     const winner = p1Won
-      ? FIGHTER_REGISTRY[this.p1FighterId].displayName
-      : FIGHTER_REGISTRY[this.p2FighterId].displayName;
+      ? (p1Fighter?.displayName ?? 'Player 1')
+      : (p2Fighter?.displayName ?? 'Player 2');
 
     // Check for flawless victory (winner has full health)
     const winnerHealth = p1Won ? this.p1PlayerState.health : this.p2PlayerState.health;
@@ -595,6 +624,18 @@ export class FightScene extends Phaser.Scene {
   }
 
   update(_time: number, _delta: number): void {
+    // Check for pause/escape
+    if (Phaser.Input.Keyboard.JustDown(this.keys.escape)) {
+      this.togglePause();
+      return;
+    }
+
+    // Handle pause menu keyboard navigation when paused
+    if (this.isPaused) {
+      this.handlePauseMenuInput();
+      return;
+    }
+
     if (this.gamePhase !== GamePhase.FIGHTING) return;
     if (this.fightState !== FightState.ACTIVE) return;
 
@@ -675,10 +716,10 @@ export class FightScene extends Phaser.Scene {
     return mask;
   }
 
-  /** Get P2 input as bitmask (or AI input in 1P mode) */
+  /** Get P2 input as bitmask (or AI input in 1P/Story mode) */
   private getP2InputMask(): number {
-    // Use AI input in 1P mode
-    if (this.gameMode === '1P' && this.p2AI) {
+    // Use AI input in 1P and STORY modes
+    if ((this.gameMode === '1P' || this.gameMode === 'STORY') && this.p2AI) {
       return this.p2AI.getInput(
         this.p2State,
         this.p1State,
@@ -816,8 +857,216 @@ export class FightScene extends Phaser.Scene {
     this.backgroundDomElement.style.transform = `translateX(calc(-50% - ${parallaxOffset}px))`;
   }
 
+  /** Create mobile pause button */
+  private createPauseButton(): void {
+    this.pauseButton = this.add.container(50, 40);
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x333344, 0.8);
+    bg.fillRoundedRect(-30, -18, 60, 36, 8);
+    bg.lineStyle(2, 0x666688);
+    bg.strokeRoundedRect(-30, -18, 60, 36, 8);
+    this.pauseButton.add(bg);
+
+    // Pause icon (two vertical bars)
+    const pauseIcon = this.add.text(0, 0, '⏸', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '20px',
+      color: '#ffffff',
+    });
+    pauseIcon.setOrigin(0.5);
+    this.pauseButton.add(pauseIcon);
+
+    // Make interactive
+    this.pauseButton.setSize(60, 36);
+    this.pauseButton.setInteractive({ useHandCursor: true });
+    this.pauseButton.on('pointerdown', () => this.togglePause());
+    this.pauseButton.setDepth(200);
+  }
+
+  /** Toggle pause state */
+  private togglePause(): void {
+    if (this.isPaused) {
+      this.resumeGame();
+    } else {
+      this.pauseGame();
+    }
+  }
+
+  /** Pause the game and show pause menu */
+  private pauseGame(): void {
+    this.isPaused = true;
+
+    // Pause timers
+    if (this.roundTimerEvent) {
+      this.roundTimerEvent.paused = true;
+    }
+
+    // Reset pause menu state
+    this.pauseMenuButtons = [];
+    this.pauseMenuCallbacks = [];
+    this.pauseMenuSelectedIndex = 0;
+
+    // Create pause menu
+    this.pauseMenu = this.add.container(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+    this.pauseMenu.setDepth(300);
+
+    // Darken background
+    const overlay = this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0.7);
+    this.pauseMenu.add(overlay);
+
+    // Menu box
+    const menuBg = this.add.rectangle(0, 0, 300, 250, 0x222233, 0.95);
+    menuBg.setStrokeStyle(3, 0xffcc00);
+    this.pauseMenu.add(menuBg);
+
+    // Title
+    const title = this.add.text(0, -90, 'PAUSED', {
+      fontFamily: 'Impact, sans-serif',
+      fontSize: '36px',
+      color: '#ffcc00',
+      stroke: '#000000',
+      strokeThickness: 4,
+    });
+    title.setOrigin(0.5);
+    this.pauseMenu.add(title);
+
+    // Resume button
+    const resumeBtn = this.createMenuButton(0, -20, 'RESUME', () => this.resumeGame());
+    this.pauseMenu.add(resumeBtn);
+    this.pauseMenuButtons.push(resumeBtn);
+    this.pauseMenuCallbacks.push(() => this.resumeGame());
+
+    // Quit to Menu button
+    const quitBtn = this.createMenuButton(0, 50, 'QUIT TO MENU', () => this.quitToMenu());
+    this.pauseMenu.add(quitBtn);
+    this.pauseMenuButtons.push(quitBtn);
+    this.pauseMenuCallbacks.push(() => this.quitToMenu());
+
+    // Highlight first button by default
+    this.updatePauseMenuSelection();
+  }
+
+  /** Create a pause menu button */
+  private createMenuButton(x: number, y: number, label: string, callback: () => void): Phaser.GameObjects.Container {
+    const container = this.add.container(x, y);
+
+    const bg = this.add.rectangle(0, 0, 200, 50, 0x334477);
+    bg.setStrokeStyle(2, 0x5566aa);
+    container.add(bg);
+    container.setData('bg', bg); // Store reference for selection highlighting
+
+    const text = this.add.text(0, 0, label, {
+      fontFamily: 'Impact, sans-serif',
+      fontSize: '22px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 2,
+    });
+    text.setOrigin(0.5);
+    container.add(text);
+
+    // Make the container itself interactive (not just the bg)
+    container.setSize(200, 50);
+    container.setInteractive({ useHandCursor: true });
+    container.on('pointerover', () => {
+      // Update selection to this button on hover
+      const index = this.pauseMenuButtons.indexOf(container);
+      if (index >= 0) {
+        this.pauseMenuSelectedIndex = index;
+        this.updatePauseMenuSelection();
+      }
+    });
+    container.on('pointerdown', callback);
+
+    return container;
+  }
+
+  /** Update visual selection state of pause menu buttons */
+  private updatePauseMenuSelection(): void {
+    this.pauseMenuButtons.forEach((btn, index) => {
+      const bg = btn.getData('bg') as Phaser.GameObjects.Rectangle | undefined;
+      if (!bg) return;
+
+      if (index === this.pauseMenuSelectedIndex) {
+        bg.setFillStyle(0x446699);
+        btn.setScale(1.05);
+      } else {
+        bg.setFillStyle(0x334477);
+        btn.setScale(1);
+      }
+    });
+  }
+
+  /** Handle pause menu keyboard navigation */
+  private handlePauseMenuInput(): void {
+    if (!this.isPaused || this.pauseMenuButtons.length === 0) return;
+
+    const keyboard = this.input.keyboard;
+    if (!keyboard) return;
+
+    // Navigate up (W or Up Arrow)
+    if (Phaser.Input.Keyboard.JustDown(keyboard.addKey('W')) ||
+        Phaser.Input.Keyboard.JustDown(keyboard.addKey('UP'))) {
+      this.pauseMenuSelectedIndex--;
+      if (this.pauseMenuSelectedIndex < 0) {
+        this.pauseMenuSelectedIndex = this.pauseMenuButtons.length - 1;
+      }
+      this.updatePauseMenuSelection();
+    }
+
+    // Navigate down (S or Down Arrow)
+    if (Phaser.Input.Keyboard.JustDown(keyboard.addKey('S')) ||
+        Phaser.Input.Keyboard.JustDown(keyboard.addKey('DOWN'))) {
+      this.pauseMenuSelectedIndex++;
+      if (this.pauseMenuSelectedIndex >= this.pauseMenuButtons.length) {
+        this.pauseMenuSelectedIndex = 0;
+      }
+      this.updatePauseMenuSelection();
+    }
+
+    // Select (Enter or Space)
+    if (Phaser.Input.Keyboard.JustDown(keyboard.addKey('ENTER')) ||
+        Phaser.Input.Keyboard.JustDown(keyboard.addKey('SPACE'))) {
+      const callback = this.pauseMenuCallbacks[this.pauseMenuSelectedIndex];
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  /** Resume the game */
+  private resumeGame(): void {
+    this.isPaused = false;
+
+    // Resume timers
+    if (this.roundTimerEvent) {
+      this.roundTimerEvent.paused = false;
+    }
+
+    // Destroy pause menu
+    if (this.pauseMenu) {
+      this.pauseMenu.destroy();
+    }
+    this.pauseMenu = undefined!;
+    this.pauseMenuButtons = [];
+    this.pauseMenuCallbacks = [];
+  }
+
+  /** Quit to mode select menu */
+  private quitToMenu(): void {
+    // Clean up
+    this.resumeGame();
+    this.shutdown();
+    this.scene.start('ModeSelectScene');
+  }
+
   /** Clean up DOM elements when scene shuts down */
   shutdown(): void {
+    // Stop background music
+    getAudioManager().stopMusic();
+
     if (this.backgroundContainer) {
       this.backgroundContainer.remove();
     }
@@ -833,5 +1082,11 @@ export class FightScene extends Phaser.Scene {
     this.p2TouchInputs.clear();
     this.p1TouchJustPressed.clear();
     this.p2TouchJustPressed.clear();
+
+    // Clean up pause menu
+    if (this.pauseMenu) {
+      this.pauseMenu.destroy();
+    }
+    this.pauseMenu = undefined!;
   }
 }

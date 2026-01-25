@@ -7,11 +7,14 @@
 import Phaser from 'phaser';
 
 import { createGameConfig } from './config/gameConfig';
+import { AboutScene } from './scenes/AboutScene';
 import { BootScene } from './scenes/BootScene';
 import { CharacterSelectScene } from './scenes/CharacterSelectScene';
+import { DifficultySelectScene } from './scenes/DifficultySelectScene';
 import { FightScene } from './scenes/FightScene';
 import { ModeSelectScene } from './scenes/ModeSelectScene';
 import { PreloadScene } from './scenes/PreloadScene';
+import { SettingsScene } from './scenes/SettingsScene';
 import { StageSelectScene } from './scenes/StageSelectScene';
 import { StoryModeScene } from './scenes/StoryModeScene';
 import { StorySelectScene } from './scenes/StorySelectScene';
@@ -32,7 +35,20 @@ export class GameApp {
     logger.info('Starting mITyFighter...');
 
     const config = createGameConfig({
-      scenes: [BootScene, PreloadScene, TitleScene, ModeSelectScene, CharacterSelectScene, StageSelectScene, FightScene, StorySelectScene, StoryModeScene],
+      scenes: [
+        BootScene,
+        PreloadScene,
+        TitleScene,
+        ModeSelectScene,
+        CharacterSelectScene,
+        StageSelectScene,
+        FightScene,
+        StorySelectScene,
+        DifficultySelectScene,
+        StoryModeScene,
+        SettingsScene,
+        AboutScene,
+      ],
     });
 
     this.game = new Phaser.Game(config);

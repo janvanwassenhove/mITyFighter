@@ -71,6 +71,9 @@ export class PlaygroundScene extends Phaser.Scene {
     // Initialize audio manager for this scene
     getAudioManager().init(this);
 
+    // Start background music
+    getAudioManager().playMusic();
+
     // Initialize background
     this.initBackground();
 

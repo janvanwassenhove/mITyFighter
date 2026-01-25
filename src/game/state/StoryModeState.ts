@@ -33,6 +33,8 @@ export interface StoryFight {
 export interface StoryProgress {
   /** Player's chosen fighter */
   playerFighterId: FighterId;
+  /** Selected difficulty level */
+  difficulty: AIDifficulty;
   /** Current fight index (0-based) */
   currentFightIndex: number;
   /** Total wins */
@@ -65,8 +67,12 @@ export const FINAL_BOSS_ID: FighterId = 'elder_honkstorm';
 /**
  * Generate story fights based on player's chosen fighter.
  * Creates a sequence of increasingly difficult opponents culminating in the final boss.
+ * 
+ * @param playerFighterId - The player's selected fighter
+ * @param difficultyOverride - Optional difficulty override. If provided, all non-boss fights use this difficulty,
+ *                            and the boss uses nightmare. If not provided, uses difficulty progression.
  */
-export function generateStoryFights(playerFighterId: FighterId): StoryFight[] {
+export function generateStoryFights(playerFighterId: FighterId, difficultyOverride?: AIDifficulty): StoryFight[] {
   const fights: StoryFight[] = [];
   
   // Get available opponents (excluding player's fighter and final boss)
@@ -78,8 +84,15 @@ export function generateStoryFights(playerFighterId: FighterId): StoryFight[] {
   const shuffled = [...availableOpponents].sort(() => Math.random() - 0.5);
   const selectedOpponents = shuffled.slice(0, REGULAR_FIGHTS);
   
-  // Difficulty progression
-  const difficulties: AIDifficulty[] = ['easy', 'easy', 'medium', 'medium', 'hard'];
+  // Difficulty progression: if override provided, all fights use that difficulty (except boss)
+  // If no override, use the default progression
+  const getDifficulty = (index: number): AIDifficulty => {
+    if (difficultyOverride) {
+      return difficultyOverride;
+    }
+    const progression: AIDifficulty[] = ['easy', 'easy', 'medium', 'medium', 'hard'];
+    return progression[index] ?? 'medium';
+  };
   
   // Get player info for personalized text
   const player = FIGHTER_REGISTRY[playerFighterId];
@@ -93,9 +106,9 @@ export function generateStoryFights(playerFighterId: FighterId): StoryFight[] {
     fights.push({
       opponentId,
       stageId,
-      difficulty: difficulties[index] ?? 'medium',
-      preFightText: generatePreFightText(player.displayName, opponent.displayName, index),
-      victoryText: generateVictoryText(player.displayName, opponent.displayName, index),
+      difficulty: getDifficulty(index),
+      preFightText: generatePreFightText(player?.displayName ?? 'Fighter', opponent?.displayName ?? 'Opponent', index),
+      victoryText: generateVictoryText(player?.displayName ?? 'Fighter', opponent?.displayName ?? 'Opponent', index),
       isBoss: false,
     });
   });
@@ -108,8 +121,8 @@ export function generateStoryFights(playerFighterId: FighterId): StoryFight[] {
     opponentId: FINAL_BOSS_ID,
     stageId: BACKGROUND_IDS.includes(bossStage) ? bossStage : BACKGROUND_IDS[0] ?? 'pit',
     difficulty: 'nightmare',
-    preFightText: generateBossPreFightText(player.displayName, boss?.displayName ?? 'The Boss'),
-    victoryText: generateBossVictoryText(player.displayName),
+    preFightText: generateBossPreFightText(player?.displayName ?? 'Fighter', boss?.displayName ?? 'The Boss'),
+    victoryText: generateBossVictoryText(player?.displayName ?? 'Fighter'),
     isBoss: true,
   });
   
@@ -159,9 +172,10 @@ function generateBossVictoryText(playerName: string): string {
 // =============================================================================
 
 /** Create initial story progress */
-export function createStoryProgress(playerFighterId: FighterId): StoryProgress {
+export function createStoryProgress(playerFighterId: FighterId, difficulty: AIDifficulty = 'medium'): StoryProgress {
   return {
     playerFighterId,
+    difficulty,
     currentFightIndex: 0,
     wins: 0,
     losses: 0,

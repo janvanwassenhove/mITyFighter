@@ -72,11 +72,42 @@ export class StorySelectScene extends Phaser.Scene {
     // Start button
     this.createStartButton();
 
+    // Create mobile back button
+    this.createBackButton();
+
     // Input handling
     this.setupInput();
 
     // Initial selection
     this.updateSelection();
+  }
+
+  /** Create mobile back button */
+  private createBackButton(): void {
+    const backButton = this.add.container(50, 40);
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x333344, 0.9);
+    bg.fillRoundedRect(-35, -20, 70, 40, 8);
+    bg.lineStyle(2, 0x666688);
+    bg.strokeRoundedRect(-35, -20, 70, 40, 8);
+    backButton.add(bg);
+
+    // Back arrow and text
+    const text = this.add.text(0, 0, '◀ BACK', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px',
+      color: '#ffffff',
+    });
+    text.setOrigin(0.5);
+    backButton.add(text);
+
+    // Make interactive
+    backButton.setSize(70, 40);
+    backButton.setInteractive({ useHandCursor: true });
+    backButton.on('pointerdown', () => this.scene.start('ModeSelectScene'));
+    backButton.setDepth(200);
   }
 
   /** Create the fighter selection grid */
@@ -237,6 +268,9 @@ export class StorySelectScene extends Phaser.Scene {
   private setupInput(): void {
     const keyboard = this.input.keyboard!;
 
+    // Remove any existing listeners to prevent duplicates on scene restart
+    keyboard.removeAllListeners();
+
     keyboard.on('keydown-LEFT', () => {
       this.selectedIndex = Math.max(0, this.selectedIndex - 1);
       this.updateSelection();
@@ -323,7 +357,7 @@ export class StorySelectScene extends Phaser.Scene {
 
     this.cameras.main.fade(300, 0, 0, 0, false, (_camera: Phaser.Cameras.Scene2D.Camera, progress: number) => {
       if (progress === 1) {
-        this.scene.start('StoryModeScene', {
+        this.scene.start('DifficultySelectScene', {
           playerFighterId: selectedFighter,
         });
       }

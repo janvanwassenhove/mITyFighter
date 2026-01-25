@@ -87,7 +87,17 @@ Application orchestrator. Manages global state and module initialization.
 | Scene | Purpose | Next Scene |
 |-------|---------|------------|
 | `BootScene` | Minimal setup, show loading indicator | PreloadScene |
-| `PreloadScene` | Load all assets, create animations | PlaygroundScene |
+| `PreloadScene` | Load all assets, create animations | TitleScene |
+| `TitleScene` | Main title screen with start menu | ModeSelectScene, SettingsScene, AboutScene |
+| `ModeSelectScene` | Choose game mode (1P, 2P, Story) | CharacterSelectScene, StorySelectScene |
+| `CharacterSelectScene` | Fighter selection | StageSelectScene |
+| `StageSelectScene` | Background/stage selection | FightScene |
+| `FightScene` | Main fighting gameplay | ModeSelectScene |
+| `StorySelectScene` | Story mode character selection | DifficultySelectScene |
+| `DifficultySelectScene` | Story difficulty selection | StoryModeScene |
+| `StoryModeScene` | Story mode progression | FightScene |
+| `SettingsScene` | Configure controls and options | TitleScene |
+| `AboutScene` | Credits and game information | TitleScene |
 | `PlaygroundScene` | 2-player testing environment | - |
 
 ### `src/game/render/`
@@ -184,6 +194,11 @@ No hardcoded counts = less maintenance, fewer bugs.
 | sim/ | Input, game rules | Phaser, rendering |
 | render/ | sim/ state, Phaser | Input handling |
 | input/ | Key events | Game rules, rendering |
+
+### 5. Movement Friction
+
+- Grounded fighters use stronger friction (decay 0.8) to stop quickly when the stick is released.
+- Airborne fighters use light friction (decay 0.98) to preserve forward/backward momentum during diagonal jumps.
 
 ### 4. Multiplayer-Ready Seams
 

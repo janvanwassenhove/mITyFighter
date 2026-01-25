@@ -46,6 +46,10 @@ export function loadAllFighters(scene: Phaser.Scene): void {
  */
 export function loadFighter(scene: Phaser.Scene, fighterId: FighterId): void {
   const fighter = FIGHTER_REGISTRY[fighterId];
+  if (!fighter) {
+    logger.warn(`Fighter not found in registry: ${fighterId}`);
+    return;
+  }
 
   for (const [actionId, filename] of Object.entries(fighter.actions)) {
     const textureKey = getFighterTextureKey(fighterId, actionId as ActionId);
@@ -89,6 +93,10 @@ export function createFighterAnimations(
   fighterId: FighterId
 ): void {
   const fighter = FIGHTER_REGISTRY[fighterId];
+  if (!fighter) {
+    logger.warn(`Fighter not found in registry: ${fighterId}`);
+    return;
+  }
 
   for (const actionId of Object.keys(fighter.actions) as ActionId[]) {
     createFighterAnimation(scene, fighterId, actionId);
@@ -111,6 +119,11 @@ export function createFighterAnimation(
   const textureKey = getFighterTextureKey(fighterId, actionId);
   const animKey = getFighterAnimationKey(fighterId, actionId);
   const fighter = FIGHTER_REGISTRY[fighterId];
+
+  if (!fighter) {
+    logger.warn(`Fighter not found in registry: ${fighterId}`);
+    return false;
+  }
 
   // Check if texture exists
   if (!scene.textures.exists(textureKey)) {
@@ -185,6 +198,9 @@ export function hasAnimation(
  */
 export function getAvailableActions(fighterId: FighterId): ActionId[] {
   const fighter = FIGHTER_REGISTRY[fighterId];
+  if (!fighter) {
+    return [];
+  }
   return Object.keys(fighter.actions) as ActionId[];
 }
 

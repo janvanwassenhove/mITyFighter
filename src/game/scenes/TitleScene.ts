@@ -1,6 +1,6 @@
 /**
  * @fileoverview Title/Splash screen scene
- * @description MK-style title screen with animated text
+ * @description MK-style title screen with animated text and menu options
  */
 
 import Phaser from 'phaser';
@@ -8,6 +8,15 @@ import Phaser from 'phaser';
 import { getAudioManager } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
 import { logger } from '../utils/logger';
+
+// =============================================================================
+// Types
+// =============================================================================
+
+interface MenuItem {
+  text: Phaser.GameObjects.Text;
+  action: () => void;
+}
 
 // =============================================================================
 // TitleScene
@@ -18,9 +27,25 @@ export class TitleScene extends Phaser.Scene {
   private subtitleText!: Phaser.GameObjects.Text;
   private pressStartText!: Phaser.GameObjects.Text;
   private blinkTimer?: Phaser.Time.TimerEvent;
+  
+  // Menu state
+  private menuItems: MenuItem[] = [];
+  private selectedMenuIndex = 0;
+  private menuVisible = false;
+
+  /** Whether to show menu immediately (when returning from Settings/About) */
+  private showMenuOnStart = false;
 
   constructor() {
     super({ key: 'TitleScene' });
+  }
+
+  init(data?: { showMenu?: boolean }): void {
+    this.showMenuOnStart = data?.showMenu ?? false;
+    // Reset menu state
+    this.menuItems = [];
+    this.selectedMenuIndex = 0;
+    this.menuVisible = false;
   }
 
   create(): void {
@@ -103,11 +128,21 @@ export class TitleScene extends Phaser.Scene {
     this.pressStartText.setOrigin(0.5);
     this.pressStartText.setAlpha(0);
 
-    // Show press start after delay
-    this.time.delayedCall(1500, () => {
-      this.pressStartText.setAlpha(1);
-      this.startBlinking();
-    });
+    // Create menu items (hidden initially)
+    this.createMenu();
+
+    // Show press start after delay, or show menu immediately if returning from Settings/About
+    if (this.showMenuOnStart) {
+      // Skip intro animations, show menu directly
+      this.titleText.setScale(1);
+      this.subtitleText.setAlpha(1);
+      this.showMenu();
+    } else {
+      this.time.delayedCall(1500, () => {
+        this.pressStartText.setAlpha(1);
+        this.startBlinking();
+      });
+    }
 
     // Credits
     const creditsText = this.add.text(
@@ -134,12 +169,148 @@ export class TitleScene extends Phaser.Scene {
     );
     versionText.setOrigin(0.5);
 
-    // Input
-    this.input.keyboard!.on('keydown-ENTER', this.startGame, this);
-    this.input.keyboard!.on('keydown-SPACE', this.startGame, this);
+    // Input - remove any existing listeners first to prevent duplicates on scene restart
+    this.input.keyboard!.removeAllListeners();
+    this.input.keyboard!.on('keydown-ENTER', this.handleEnter, this);
+    this.input.keyboard!.on('keydown-SPACE', this.handleEnter, this);
+    this.input.keyboard!.on('keydown-UP', this.handleUp, this);
+    this.input.keyboard!.on('keydown-DOWN', this.handleDown, this);
+    this.input.keyboard!.on('keydown-W', this.handleUp, this);
+    this.input.keyboard!.on('keydown-S', this.handleDown, this);
 
     // Also allow clicking
-    this.input.on('pointerdown', this.startGame, this);
+    this.input.on('pointerdown', this.handleEnter, this);
+  }
+
+  /** Create the main menu options */
+  private createMenu(): void {
+    const menuStartY = 480;
+    const menuSpacing = 50;
+
+    const menuOptions = [
+      { label: '▶ START GAME', action: () => this.startGame() },
+      { label: '⚙ SETTINGS', action: () => this.goToSettings() },
+      { label: 'ℹ ABOUT', action: () => this.goToAbout() },
+    ];
+
+    menuOptions.forEach((option, index) => {
+      const text = this.add.text(GAME_WIDTH / 2, menuStartY + index * menuSpacing, option.label, {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '26px',
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 3,
+      });
+      text.setOrigin(0.5);
+      text.setAlpha(0);
+      text.setInteractive({ useHandCursor: true });
+
+      // Hover effects
+      text.on('pointerover', () => {
+        if (this.menuVisible) {
+          this.selectedMenuIndex = index;
+          this.updateMenuSelection();
+        }
+      });
+
+      text.on('pointerdown', () => {
+        if (this.menuVisible) {
+          this.selectedMenuIndex = index;
+          this.updateMenuSelection();
+          this.confirmMenuSelection();
+        }
+      });
+
+      this.menuItems.push({ text, action: option.action });
+    });
+  }
+
+  /** Handle enter/space key */
+  private handleEnter(): void {
+    if (!this.menuVisible) {
+      this.showMenu();
+    } else {
+      this.confirmMenuSelection();
+    }
+  }
+
+  /** Handle up key */
+  private handleUp(): void {
+    if (!this.menuVisible) return;
+    this.selectedMenuIndex = (this.selectedMenuIndex - 1 + this.menuItems.length) % this.menuItems.length;
+    this.updateMenuSelection();
+  }
+
+  /** Handle down key */
+  private handleDown(): void {
+    if (!this.menuVisible) return;
+    this.selectedMenuIndex = (this.selectedMenuIndex + 1) % this.menuItems.length;
+    this.updateMenuSelection();
+  }
+
+  /** Show the menu and hide press start */
+  private showMenu(): void {
+    if (this.menuVisible) return;
+    this.menuVisible = true;
+
+    // Stop blinking and hide press start
+    if (this.blinkTimer) {
+      this.blinkTimer.remove();
+    }
+    
+    this.tweens.add({
+      targets: this.pressStartText,
+      alpha: 0,
+      duration: 200,
+    });
+
+    // Show menu items
+    this.menuItems.forEach((item, index) => {
+      this.tweens.add({
+        targets: item.text,
+        alpha: 1,
+        y: item.text.y - 10,
+        duration: 300,
+        delay: index * 100,
+        ease: 'Back.easeOut',
+      });
+    });
+
+    // Initial selection
+    this.updateMenuSelection();
+  }
+
+  /** Update menu selection visual */
+  private updateMenuSelection(): void {
+    this.menuItems.forEach((item, index) => {
+      const isSelected = index === this.selectedMenuIndex;
+      item.text.setColor(isSelected ? '#ffcc00' : '#ffffff');
+      item.text.setScale(isSelected ? 1.1 : 1);
+    });
+  }
+
+  /** Confirm the current menu selection */
+  private confirmMenuSelection(): void {
+    const selected = this.menuItems[this.selectedMenuIndex];
+    if (selected) {
+      selected.action();
+    }
+  }
+
+  /** Go to settings scene */
+  private goToSettings(): void {
+    this.cameras.main.fade(300, 0, 0, 0);
+    this.time.delayedCall(300, () => {
+      this.scene.start('SettingsScene');
+    });
+  }
+
+  /** Go to about scene */
+  private goToAbout(): void {
+    this.cameras.main.fade(300, 0, 0, 0);
+    this.time.delayedCall(300, () => {
+      this.scene.start('AboutScene');
+    });
   }
 
   /** Create background visual effects */

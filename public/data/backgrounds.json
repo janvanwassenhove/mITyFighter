@@ -1,0 +1,151 @@
+{
+  "backgrounds": [
+    {
+      "id": "sir_splintersworth_coastal_disaster",
+      "displayName": "Sir Splintersworth's Glorious Coastal Disaster",
+      "description": "A heroic seaside battlefield made entirely of broken cannons, sad smoke, and questionable decisionsperfect for settling ancient grudges and modern paperwork disputes with fists.",
+      "file": "sir_splintersworth_coastal_disaster.mp4",
+      "type": "video"
+    },
+    {
+      "id": "lord_velvetpants_suspicious_mansion",
+      "displayName": "Lord Velvetpants' Extremely Suspicious Mansion",
+      "description": "A luxury mansion where the fountain cries, the statue judges you silently, and someone left a sports car running which is either a dramatic escape or the dumbest valet job in history.",
+      "file": "lord_velvetpants_suspicious_mansion.mp4",
+      "type": "video"
+    },
+    {
+      "id": "polite_street_impolite_violence",
+      "displayName": "The Polite Street of Extremely Impolite Violence",
+      "description": "A peaceful lantern-lit street where everyone whispers respectfully, bows politely, and then immediately launches a spinning kick because tradition is important.",
+      "file": "polite_street_impolite_violence.mp4",
+      "type": "video"
+    },
+    {
+      "id": "grand_prix_poor_life_choices",
+      "displayName": "The Grand Prix of Poor Life Choices",
+      "description": "A glamorous street race where the crowd cheers, the engines scream, and two fighters decide the best place for mortal combat is directly in the racing line.",
+      "file": "grand_prix_poor_life_choices.mp4",
+      "type": "video"
+    },
+    {
+      "id": "midnight_karaoke_bad_decisions",
+      "displayName": "The Midnight Karaoke Bar of Bad Decisions",
+      "description": "A neon-soaked biker hangout where every fight starts with \"I wasn't looking at your motorcycle\" and ends with someone being thrown through a sign that says *WELCOME* very aggressively.",
+      "file": "midnight_karaoke_bad_decisions.mp4",
+      "type": "video"
+    },
+    {
+      "id": "festival_unlicensed_sorcery",
+      "displayName": "The Festival of Unlicensed Sorcery",
+      "description": "A cheerful night fair packed with spooky lanterns, suspicious fortune-tellers, and rides that definitely haven't passed inspection since 1843 so naturally it's the ideal place for a perfectly normal fight to the death.",
+      "file": "festival_unlicensed_sorcery.mp4",
+      "type": "video"
+    },
+    {
+      "id": "jazz_tram_nowhere_particular",
+      "displayName": "The Jazz Tram to Nowhere in Particular",
+      "description": "A chaotic street packed with neon signs, grumpy locals, and one suspicious tram that claims it's a jazz club which explains the vibes, the confusion, and the sudden need for violence.",
+      "file": "jazz_tram_nowhere_particular.mp4",
+      "type": "video"
+    },
+    {
+      "id": "volcano_customer_support_hotline",
+      "displayName": "The Volcano's Customer Support Hotline",
+      "description": "A lava cave where the floor is actively trying to kill you, the walls are screaming in rock-face form, and the lightning in the distance suggests the weather also hates you personally.",
+      "file": "volcano_customer_support_hotline.gif",
+      "type": "gif"
+    },
+    {
+      "id": "tree_demands_respect_and_snacks",
+      "displayName": "The Tree That Demands Respect (And Snacks)",
+      "description": "A misty swamp dominated by a colossal treehouse fortress, where nature is ancient, watching you closely, and absolutely prepared to throw hands if you step on the wrong root.",
+      "file": "tree_demands_respect_and_snacks.mp4",
+      "type": "video"
+    },
+    {
+      "id": "captain_reginald_not_cursed_dockyard",
+      "displayName": "Captain Reginald's Totally Not-Cursed Dockyard",
+      "description": "A golden sunset harbor where the ships look majestic, the barrels look innocent, and everything feels peaceful which obviously means something terrible is about to happen in the next 3 seconds.",
+      "file": "captain_reginald_not_cursed_dockyard.mp4",
+      "type": "video"
+    },
+    {
+      "id": "temple_extremely_unnecessary_biceps",
+      "displayName": "The Temple of Extremely Unnecessary Biceps",
+      "description": "A glorious fitness palace where everyone is permanently flexing, the mirrors are emotionally intimidating, and even the dumbbells look like they're judging your life choices.",
+      "file": "temple_extremely_unnecessary_biceps.mp4",
+      "type": "video"
+    },
+    {
+      "id": "platform_7_and_3_quarters_wrong_train",
+      "displayName": "Platform 7: The Slightly Wrong Train",
+      "description": "A sunny station where everything looks normal except the train clearly isn't leaving, the crates are suspiciously placed, and you just *know* somebody is about to get thrown onto the luggage cart.",
+      "file": "platform_7_and_3_quarters_wrong_train.gif",
+      "type": "gif"
+    },
+    {
+      "id": "market_1000_opinions_2_chickens",
+      "displayName": "The Market of 1,000 Opinions (and 2 Chickens)",
+      "description": "A busy street market where everyone is watching respectfully, half the crowd is secretly judging your stance, and the chickens are clearly running the place like tiny feathered crime bosses.",
+      "file": "market_1000_opinions_2_chickens.gif",
+      "type": "gif"
+    },
+    {
+      "id": "dockside_mildly_illegal_commerce",
+      "displayName": "The Dockside of Mildly Illegal Commerce",
+      "description": "A gloomy night harbor where the boats are held together by hope, rope, and bad decisions, while the fancy skyline watches from afar pretending it doesn't know you.",
+      "file": "dockside_mildly_illegal_commerce.gif",
+      "type": "gif"
+    },
+    {
+      "id": "aquarium_aggressively_peaceful_vibes",
+      "displayName": "The Aquarium of Aggressively Peaceful Vibes",
+      "description": "A classy aquarium lounge where families admire the sea life, the staff pretend everything is normal, and two fighters choose to start a brawl while a manatee silently disapproves.",
+      "file": "aquarium_aggressively_peaceful_vibes.gif",
+      "type": "gif"
+    },
+    {
+      "id": "sunset_factory_questionable_safety",
+      "displayName": "The Sunset Factory of Questionable Safety Standards",
+      "description": "A massive refinery where the air is 40% steam, 30% rust, and 30% \"we swear this is fine,\" making it the perfect place to resolve arguments with flying kicks instead of health & safety paperwork.",
+      "file": "sunset_factory_questionable_safety.gif",
+      "type": "gif"
+    },
+    {
+      "id": "business_district_passive_aggressive_doom",
+      "displayName": "The Business District of Passive-Aggressive Doom",
+      "description": "A crowded overpass where everyone is dressed for meetings, pretending they don't see anything until someone gets launched into the traffic signs and suddenly it's \"team building.\"",
+      "file": "business_district_passive_aggressive_doom.gif",
+      "type": "gif"
+    },
+    {
+      "id": "underpass_unsolicited_drama",
+      "displayName": "The Underpass of Unsolicited Drama",
+      "description": "A busy city underpass where the traffic is loud, the teens are judging, and the yellow car is just trying to exist until two fighters turn the crosswalk into a personal disagreement zone.",
+      "file": "underpass_unsolicited_drama.gif",
+      "type": "gif"
+    },
+    {
+      "id": "courtyard_elegant_overreaction",
+      "displayName": "The Courtyard of Elegant Overreaction",
+      "description": "A breathtaking palace courtyard where everything is calm, symmetrical, and expensiveso of course the universe demands a completely unnecessary duel right in the middle of the reflection.",
+      "file": "courtyard_elegant_overreaction.gif",
+      "type": "gif"
+    },
+    {
+      "id": "dragons_interior_decorating_dungeon",
+      "displayName": "The Dragon's Interior Decorating Dungeon",
+      "description": "A terrifying palace where a giant dragon statue breathes fire like it's showing off, the floor looks allergic to footsteps, and every echo whispers \"you really should've stayed home today.\"",
+      "file": "dragons_interior_decorating_dungeon.gif",
+      "type": "gif"
+    },
+    {
+      "id": "gate_13_boarding_call_violence",
+      "displayName": "Gate 13: The Boarding Call for Violence",
+      "description": "A frozen airport runway where the plane is ready, the crew is working hard, and two fighters decide to settle their differences next to the landing gear like it's a perfectly normal travel activity.",
+      "file": "gate_13_boarding_call_violence.mp4",
+      "type": "video"
+    }
+  ]
+}

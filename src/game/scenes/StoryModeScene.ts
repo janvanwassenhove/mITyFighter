@@ -9,6 +9,7 @@ import { getFighterTextureKey } from '../assets/AssetKeys';
 import { FIGHTER_REGISTRY, FIGHTER_IDS, type FighterId } from '../assets/fighterRegistry';
 import { getAudioManager } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
+import type { AIDifficulty } from '../sim/FightingAI';
 import {
   type StoryFight,
   type StoryProgress,
@@ -28,6 +29,8 @@ import { logger } from '../utils/logger';
 export interface StorySceneData {
   /** Player's chosen fighter (only for initial start) */
   playerFighterId?: FighterId;
+  /** Selected difficulty level (only for initial start) */
+  selectedDifficulty?: AIDifficulty;
   /** Existing story progress (for continuing story) */
   progress?: StoryProgress;
   /** Existing story fights */
@@ -74,19 +77,20 @@ export class StoryModeScene extends Phaser.Scene {
         }
       }
     } else if (data.playerFighterId) {
-      // Starting new story
-      this.progress = createStoryProgress(data.playerFighterId);
-      this.fights = generateStoryFights(data.playerFighterId);
+      // Starting new story with difficulty selection
+      const difficulty = data.selectedDifficulty ?? 'medium';
+      this.progress = createStoryProgress(data.playerFighterId, difficulty);
+      this.fights = generateStoryFights(data.playerFighterId, difficulty);
     } else {
       // Fallback - shouldn't happen
       const defaultFighter = FIGHTER_IDS[0] ?? 'bartholomew_blaze';
-      this.progress = createStoryProgress(defaultFighter as FighterId);
-      this.fights = generateStoryFights(defaultFighter as FighterId);
+      this.progress = createStoryProgress(defaultFighter as FighterId, 'medium');
+      this.fights = generateStoryFights(defaultFighter as FighterId, 'medium');
     }
 
     this.currentFight = getCurrentFight(this.fights, this.progress);
     
-    logger.info(`StoryModeScene: Fight ${this.progress.currentFightIndex + 1}/${this.fights.length}`);
+    logger.info(`StoryModeScene: Fight ${this.progress.currentFightIndex + 1}/${this.fights.length} (Difficulty: ${this.progress.difficulty})`);
   }
 
   create(): void {
@@ -96,6 +100,12 @@ export class StoryModeScene extends Phaser.Scene {
     // Background
     this.cameras.main.setBackgroundColor('#0a0a15');
     this.createBackgroundEffects();
+
+    // Setup ESC key to go back to mode select
+    this.setupEscapeKey();
+
+    // Create mobile back button
+    this.createBackButton();
 
     // Check game state
     if (this.progress.isComplete) {
@@ -107,6 +117,41 @@ export class StoryModeScene extends Phaser.Scene {
     } else {
       this.showPreFightScreen();
     }
+  }
+
+  /** Setup ESC key to return to mode select */
+  private setupEscapeKey(): void {
+    this.input.keyboard!.on('keydown-ESC', () => {
+      this.scene.start('ModeSelectScene');
+    });
+  }
+
+  /** Create mobile back button */
+  private createBackButton(): void {
+    const backButton = this.add.container(50, 40);
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x333344, 0.9);
+    bg.fillRoundedRect(-35, -20, 70, 40, 8);
+    bg.lineStyle(2, 0x666688);
+    bg.strokeRoundedRect(-35, -20, 70, 40, 8);
+    backButton.add(bg);
+
+    // Back arrow and text
+    const text = this.add.text(0, 0, '◀ BACK', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px',
+      color: '#ffffff',
+    });
+    text.setOrigin(0.5);
+    backButton.add(text);
+
+    // Make interactive
+    backButton.setSize(70, 40);
+    backButton.setInteractive({ useHandCursor: true });
+    backButton.on('pointerdown', () => this.scene.start('ModeSelectScene'));
+    backButton.setDepth(200);
   }
 
   /** Create background visual effects */
@@ -223,8 +268,8 @@ export class StoryModeScene extends Phaser.Scene {
       color: diffColor,
     }).setOrigin(0.5);
 
-    // Story text box
-    this.createStoryTextBox(this.currentFight.preFightText, 380);
+    // Story text box (positioned below characters)
+    this.createStoryTextBox(this.currentFight.preFightText, 480);
 
     // Fight button
     this.createActionButton(GAME_WIDTH / 2, GAME_HEIGHT - 80, 'FIGHT!', () => {

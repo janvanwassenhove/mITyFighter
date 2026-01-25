@@ -51,6 +51,11 @@ export function loadBackground(
   }
 
   const background = BACKGROUND_REGISTRY[backgroundId];
+  if (!background) {
+    logger.warn(`Background not found in registry: ${backgroundId}`);
+    return;
+  }
+
   const assetKey = getBackgroundKey(backgroundId);
   const path = `${BACKGROUNDS_BASE_PATH}/${background.file}`;
 
@@ -82,6 +87,10 @@ export function hasBackground(
 ): boolean {
   const assetKey = getBackgroundKey(backgroundId);
   const background = BACKGROUND_REGISTRY[backgroundId];
+  
+  if (!background) {
+    return false;
+  }
   
   if (background.type === 'video') {
     return scene.cache.video.exists(assetKey);

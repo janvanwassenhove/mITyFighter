@@ -1,5 +1,5 @@
 /**
- * @fileoverview Background registry with typed definitions
+ * @fileoverview Background registry with dynamic JSON loading support
  * @see docs/SPEC_KIT.md - This file follows the spec-kit contract
  * @see docs/ASSETS.md - Background asset conventions
  * @see docs/EXTENSIBILITY.md - How to add new backgrounds
@@ -17,155 +17,167 @@ export interface BackgroundRegistryEntry {
   readonly id: string;
   /** Display name for UI */
   readonly displayName: string;
+  /** Description of the background */
+  readonly description: string;
   /** Filename relative to backgrounds folder */
   readonly file: string;
   /** Type of background asset */
   readonly type: 'image' | 'video' | 'gif';
 }
 
+/**
+ * JSON structure for backgrounds data file
+ */
+export interface BackgroundsJsonData {
+  backgrounds: BackgroundRegistryEntry[];
+}
+
 // =============================================================================
-// Registry
+// Dynamic Registry Storage
+// =============================================================================
+
+/** Dynamic background registry (populated from JSON) */
+let backgroundRegistry: Record<string, BackgroundRegistryEntry> = {};
+
+/** Array of all background IDs (populated from JSON) */
+let backgroundIds: string[] = [];
+
+/** Flag to check if registry is loaded */
+let isLoaded = false;
+
+// =============================================================================
+// JSON Loading
 // =============================================================================
 
 /**
- * Background registry.
- * Add new backgrounds here following EXTENSIBILITY.md guidelines.
+ * Load backgrounds from JSON file.
+ * Call this during game initialization before accessing registry.
+ * 
+ * @returns Promise that resolves when backgrounds are loaded
  */
-export const BACKGROUND_REGISTRY = {
-  pit: {
-    id: 'pit',
-    displayName: 'The Pit',
-    file: '3yEmUFm.mp4',
-    type: 'video',
+export async function loadBackgroundsFromJson(): Promise<void> {
+  try {
+    const response = await fetch('data/backgrounds.json');
+    if (!response.ok) {
+      throw new Error(`Failed to load backgrounds.json: ${response.status}`);
+    }
+    
+    const data: BackgroundsJsonData = await response.json();
+    
+    // Build registry from JSON data
+    backgroundRegistry = {};
+    backgroundIds = [];
+    
+    for (const background of data.backgrounds) {
+      backgroundRegistry[background.id] = background;
+      backgroundIds.push(background.id);
+    }
+    
+    isLoaded = true;
+    console.log(`Loaded ${backgroundIds.length} backgrounds from JSON`);
+  } catch (error) {
+    console.error('Error loading backgrounds from JSON:', error);
+    throw error;
+  }
+}
+
+/**
+ * Check if registry is loaded.
+ * @returns True if registry has been loaded from JSON
+ */
+export function isBackgroundRegistryLoaded(): boolean {
+  return isLoaded;
+}
+
+// =============================================================================
+// Registry Access (Backward Compatible)
+// =============================================================================
+
+/**
+ * Get the background registry object.
+ * Note: Returns a read-only view of the dynamically loaded registry.
+ */
+export function getBackgroundRegistry(): Readonly<Record<string, BackgroundRegistryEntry>> {
+  if (!isLoaded) {
+    console.warn('Background registry accessed before loading from JSON');
+  }
+  return backgroundRegistry;
+}
+
+/**
+ * Legacy constant for backward compatibility.
+ * Proxies to the dynamic registry.
+ */
+export const BACKGROUND_REGISTRY = new Proxy({} as Record<string, BackgroundRegistryEntry>, {
+  get(_, prop: string) {
+    return backgroundRegistry[prop];
   },
-  courtyard: {
-    id: 'courtyard',
-    displayName: 'Courtyard',
-    file: '4003cn5.mp4',
-    type: 'video',
+  ownKeys() {
+    return backgroundIds;
   },
-  throne: {
-    id: 'throne',
-    displayName: 'Throne Room',
-    file: '9DMQ7ae.mp4',
-    type: 'video',
+  getOwnPropertyDescriptor(_, prop: string) {
+    if (prop in backgroundRegistry) {
+      return {
+        enumerable: true,
+        configurable: true,
+        value: backgroundRegistry[prop],
+      };
+    }
+    return undefined;
   },
-  temple: {
-    id: 'temple',
-    displayName: 'Temple',
-    file: 'aTCokPU.mp4',
-    type: 'video',
+  has(_, prop: string) {
+    return prop in backgroundRegistry;
   },
-  forest: {
-    id: 'forest',
-    displayName: 'Living Forest',
-    file: 'bMq9APc.mp4',
-    type: 'video',
-  },
-  bridge: {
-    id: 'bridge',
-    displayName: 'Bridge',
-    file: 'bsdz2KK.mp4',
-    type: 'video',
-  },
-  arena: {
-    id: 'arena',
-    displayName: 'Arena',
-    file: 'davQLBo.mp4',
-    type: 'video',
-  },
-  portal: {
-    id: 'portal',
-    displayName: 'Portal',
-    file: 'NW0mK39.mp4',
-    type: 'video',
-  },
-  tower: {
-    id: 'tower',
-    displayName: 'Tower',
-    file: 'NYFd64r.mp4',
-    type: 'video',
-  },
-  wasteland: {
-    id: 'wasteland',
-    displayName: 'Wasteland',
-    file: 'szTQ7dL.mp4',
-    type: 'video',
-  },
-  dungeon: {
-    id: 'dungeon',
-    displayName: 'Dungeon',
-    file: 'XQiErrk.mp4',
-    type: 'video',
-  },
-  dojo_1: {
-    id: 'dojo_1',
-    displayName: 'Dojo',
-    file: 'undefined - Imgur.gif',
-    type: 'gif',
-  },
-  dojo_2: {
-    id: 'dojo_2',
-    displayName: 'Dojo Night',
-    file: 'undefined - Imgur (1).gif',
-    type: 'gif',
-  },
-  street: {
-    id: 'street',
-    displayName: 'Street',
-    file: 'undefined - Imgur (2).gif',
-    type: 'gif',
-  },
-  rooftop: {
-    id: 'rooftop',
-    displayName: 'Rooftop',
-    file: 'undefined - Imgur (3).gif',
-    type: 'gif',
-  },
-  cave: {
-    id: 'cave',
-    displayName: 'Cave',
-    file: 'undefined - Imgur (4).gif',
-    type: 'gif',
-  },
-  garden: {
-    id: 'garden',
-    displayName: 'Garden',
-    file: 'undefined - Imgur (5).gif',
-    type: 'gif',
-  },
-  battlefield: {
-    id: 'battlefield',
-    displayName: 'Battlefield',
-    file: 'undefined - Imgur (6).gif',
-    type: 'gif',
-  },
-  shrine: {
-    id: 'shrine',
-    displayName: 'Shrine',
-    file: 'undefined - Imgur (7).gif',
-    type: 'gif',
-  },
-  palace: {
-    id: 'palace',
-    displayName: 'Palace',
-    file: 'undefined - Imgur (8).gif',
-    type: 'gif',
-  },
-} as const satisfies Record<string, BackgroundRegistryEntry>;
+});
 
 // =============================================================================
 // Type Exports
 // =============================================================================
 
-/** Background ID type derived from registry keys */
-export type BackgroundId = keyof typeof BACKGROUND_REGISTRY;
+/** Background ID type - now a string since registry is dynamic */
+export type BackgroundId = string;
 
-/** Array of all background IDs */
-export const BACKGROUND_IDS = Object.keys(BACKGROUND_REGISTRY) as BackgroundId[];
+/** Get array of all background IDs */
+export function getBackgroundIds(): readonly string[] {
+  return backgroundIds;
+}
 
-/** Number of registered backgrounds */
-export const BACKGROUND_COUNT = BACKGROUND_IDS.length;
+/**
+ * Legacy constant for backward compatibility.
+ * Proxies to the dynamic IDs array.
+ */
+export const BACKGROUND_IDS: readonly string[] = new Proxy([] as string[], {
+  get(_, prop) {
+    if (prop === 'length') return backgroundIds.length;
+    if (prop === Symbol.iterator) return () => backgroundIds[Symbol.iterator]();
+    if (typeof prop === 'string' && !isNaN(Number(prop))) {
+      return backgroundIds[Number(prop)];
+    }
+    if (prop === 'indexOf') return (id: string) => backgroundIds.indexOf(id);
+    if (prop === 'includes') return (id: string) => backgroundIds.includes(id);
+    if (prop === 'map') return <T>(fn: (id: string, index: number, array: string[]) => T) => backgroundIds.map(fn);
+    if (prop === 'forEach') return (fn: (id: string, index: number, array: string[]) => void) => backgroundIds.forEach(fn);
+    if (prop === 'filter') return (fn: (id: string, index: number, array: string[]) => boolean) => backgroundIds.filter(fn);
+    return undefined;
+  },
+});
+
+/** Get number of registered backgrounds */
+export function getBackgroundCount(): number {
+  return backgroundIds.length;
+}
+
+/**
+ * Legacy constant for backward compatibility.
+ */
+export const BACKGROUND_COUNT = {
+  valueOf(): number {
+    return backgroundIds.length;
+  },
+  toString(): string {
+    return String(backgroundIds.length);
+  },
+} as unknown as number;
 
 // =============================================================================
 // Helpers
@@ -175,10 +187,10 @@ export const BACKGROUND_COUNT = BACKGROUND_IDS.length;
  * Get a background registry entry by ID.
  *
  * @param id - Background identifier
- * @returns Background registry entry
+ * @returns Background registry entry or undefined if not found
  */
-export function getBackground(id: BackgroundId): BackgroundRegistryEntry {
-  return BACKGROUND_REGISTRY[id];
+export function getBackground(id: BackgroundId): BackgroundRegistryEntry | undefined {
+  return backgroundRegistry[id];
 }
 
 /**
@@ -188,7 +200,7 @@ export function getBackground(id: BackgroundId): BackgroundRegistryEntry {
  * @returns True if valid background ID
  */
 export function isValidBackgroundId(id: string): id is BackgroundId {
-  return id in BACKGROUND_REGISTRY;
+  return id in backgroundRegistry;
 }
 
 /**
@@ -202,8 +214,8 @@ export function getNextBackgroundId(
   currentId: BackgroundId,
   direction: 1 | -1
 ): BackgroundId {
-  const currentIndex = BACKGROUND_IDS.indexOf(currentId);
-  const nextIndex =
-    (currentIndex + direction + BACKGROUND_COUNT) % BACKGROUND_COUNT;
-  return BACKGROUND_IDS[nextIndex] as BackgroundId;
+  const currentIndex = backgroundIds.indexOf(currentId);
+  const count = backgroundIds.length;
+  const nextIndex = (currentIndex + direction + count) % count;
+  return backgroundIds[nextIndex] ?? currentId;
 }

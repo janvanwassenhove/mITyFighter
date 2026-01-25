@@ -78,14 +78,18 @@ export class CharacterSelectScene extends Phaser.Scene {
     p2Down: Phaser.Input.Keyboard.Key;
     p2Confirm: Phaser.Input.Keyboard.Key;
     start: Phaser.Input.Keyboard.Key;
+    escape: Phaser.Input.Keyboard.Key;
   };
+
+  /** Mobile back button */
+  private backButton?: Phaser.GameObjects.Container;
 
   /** Touch mode state */
   private isTouchMode = false;
-  /** Current selecting player in touch mode (alternates between P1 and P2) */
-  private touchSelectingPlayer: 'P1' | 'P2' = 'P1';
   /** Touch UI buttons */
   private startButton?: Phaser.GameObjects.Container;
+  private p1ChangeButton?: Phaser.GameObjects.Container;
+  private p2ChangeButton?: Phaser.GameObjects.Container;
 
   constructor() {
     super({ key: 'CharacterSelectScene' });
@@ -150,6 +154,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     // Add touch-specific UI
     if (this.isTouchMode) {
       this.setupTouchUI();
+      this.createBackButton();
     }
 
     this.updateCursors();
@@ -191,7 +196,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       // Fighter preview sprite (using idle frame 0) - MK-style zoomed close-up
       const fighter = FIGHTER_REGISTRY[fighterId];
       const textureKey = getFighterTextureKey(fighterId, 'idle');
-      if (this.textures.exists(textureKey)) {
+      if (fighter && this.textures.exists(textureKey)) {
         // Scale up aggressively to fill the box (MK style close-up)
         const scale = (PORTRAIT_SIZE / fighter.frameHeight) * 2.5;
         const sprite = this.add.sprite(0, 0, textureKey, 0);
@@ -445,6 +450,25 @@ export class CharacterSelectScene extends Phaser.Scene {
     );
     this.startButton.setVisible(false); // Hidden until both confirmed
 
+    // Create change buttons for each player (smaller buttons below preview area)
+    this.p1ChangeButton = this.createSmallTouchButton(
+      130,
+      GAME_HEIGHT - 80,
+      '↻ CHANGE P1',
+      0x0066aa,
+      () => this.onChangeP1Tapped()
+    );
+    this.p1ChangeButton.setVisible(false);
+
+    this.p2ChangeButton = this.createSmallTouchButton(
+      GAME_WIDTH - 130,
+      GAME_HEIGHT - 80,
+      '↻ CHANGE P2',
+      0xaa3333,
+      () => this.onChangeP2Tapped()
+    );
+    this.p2ChangeButton.setVisible(false);
+
     // Update button visibility based on state
     this.updateTouchUI();
   }
@@ -493,6 +517,50 @@ export class CharacterSelectScene extends Phaser.Scene {
     return container;
   }
 
+  /** Create a smaller touch-friendly button */
+  private createSmallTouchButton(
+    x: number,
+    y: number,
+    label: string,
+    color: number,
+    callback: () => void
+  ): Phaser.GameObjects.Container {
+    const container = this.add.container(x, y);
+    const width = 120;
+    const height = 40;
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(color, 1);
+    bg.fillRoundedRect(-width / 2, -height / 2, width, height, 8);
+    bg.lineStyle(2, 0xffffff, 1);
+    bg.strokeRoundedRect(-width / 2, -height / 2, width, height, 8);
+    container.add(bg);
+
+    // Button text
+    const text = this.add.text(0, 0, label, {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '14px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 2,
+    });
+    text.setOrigin(0.5);
+    container.add(text);
+
+    // Make interactive
+    container.setSize(width, height);
+    container.setInteractive({ useHandCursor: true });
+    container.on('pointerdown', callback);
+
+    // Add press effect
+    container.on('pointerover', () => container.setScale(1.05));
+    container.on('pointerout', () => container.setScale(1));
+
+    container.setDepth(100);
+    return container;
+  }
+
   /** Handle portrait tap in touch mode */
   private onPortraitTapped(index: number): void {
     if (this.isTouchMode) {
@@ -501,27 +569,26 @@ export class CharacterSelectScene extends Phaser.Scene {
         if (!this.p1Confirmed) {
           this.p1Index = index;
           this.confirmP1Selection();
+        } else {
+          // P1 already confirmed - tapping changes selection
+          this.p1Confirmed = false;
+          this.resetP1Cursor();
+          this.p1Index = index;
+          this.confirmP1Selection();
         }
       } else {
-        // In 2P mode, alternate between P1 and P2
-        if (this.touchSelectingPlayer === 'P1' && !this.p1Confirmed) {
+        // In 2P mode, handle based on current state
+        if (!this.p1Confirmed) {
+          // P1 not confirmed - select for P1
           this.p1Index = index;
           this.confirmP1Selection();
-          this.touchSelectingPlayer = 'P2';
-        } else if (this.touchSelectingPlayer === 'P2' && !this.p2Confirmed) {
+        } else if (!this.p2Confirmed) {
+          // P1 confirmed, P2 not - select for P2
           this.p2Index = index;
           this.confirmP2Selection();
-          this.touchSelectingPlayer = 'P1';
-        } else if (this.p1Confirmed && this.p2Confirmed) {
-          // Both confirmed - allow re-selection by tapping again
-          // Reset and select for P1
-          this.p1Confirmed = false;
-          this.p2Confirmed = false;
-          this.p1Index = index;
-          this.resetCursors();
-          this.confirmP1Selection();
-          this.touchSelectingPlayer = 'P2';
         }
+        // If both are confirmed, don't do anything on portrait tap
+        // Use the change buttons instead
       }
       this.updateCursors();
       this.updatePreviews();
@@ -538,6 +605,46 @@ export class CharacterSelectScene extends Phaser.Scene {
         this.updatePreviews();
       }
     }
+  }
+
+  /** Handle change P1 button tap */
+  private onChangeP1Tapped(): void {
+    this.p1Confirmed = false;
+    this.resetP1Cursor();
+    this.updateCursors();
+    this.updateTouchUI();
+  }
+
+  /** Handle change P2 button tap */
+  private onChangeP2Tapped(): void {
+    this.p2Confirmed = false;
+    this.resetP2Cursor();
+    this.updateCursors();
+    this.updateTouchUI();
+  }
+
+  /** Reset P1 cursor to unconfirmed state */
+  private resetP1Cursor(): void {
+    this.p1Cursor.clear();
+    this.p1Cursor.lineStyle(4, 0x00aaff, 1);
+    this.p1Cursor.strokeRect(
+      -PORTRAIT_SIZE / 2 - 5,
+      -PORTRAIT_SIZE / 2 - 5,
+      PORTRAIT_SIZE + 10,
+      PORTRAIT_SIZE + 10
+    );
+  }
+
+  /** Reset P2 cursor to unconfirmed state */
+  private resetP2Cursor(): void {
+    this.p2Cursor.clear();
+    this.p2Cursor.lineStyle(4, 0xff4444, 1);
+    this.p2Cursor.strokeRect(
+      -PORTRAIT_SIZE / 2 - 8,
+      -PORTRAIT_SIZE / 2 - 8,
+      PORTRAIT_SIZE + 16,
+      PORTRAIT_SIZE + 16
+    );
   }
 
   /** Confirm P1 selection (shared logic) */
@@ -582,29 +689,6 @@ export class CharacterSelectScene extends Phaser.Scene {
     logger.info(`P2 selected: ${FIGHTER_IDS[this.p2Index]}`);
   }
 
-  /** Reset cursors to unconfirmed state */
-  private resetCursors(): void {
-    // Reset P1 cursor
-    this.p1Cursor.clear();
-    this.p1Cursor.lineStyle(4, 0x00aaff, 1);
-    this.p1Cursor.strokeRect(
-      -PORTRAIT_SIZE / 2 - 5,
-      -PORTRAIT_SIZE / 2 - 5,
-      PORTRAIT_SIZE + 10,
-      PORTRAIT_SIZE + 10
-    );
-
-    // Reset P2 cursor
-    this.p2Cursor.clear();
-    this.p2Cursor.lineStyle(4, 0xff4444, 1);
-    this.p2Cursor.strokeRect(
-      -PORTRAIT_SIZE / 2 - 8,
-      -PORTRAIT_SIZE / 2 - 8,
-      PORTRAIT_SIZE + 16,
-      PORTRAIT_SIZE + 16
-    );
-  }
-
   /** Handle fight button tap */
   private onFightButtonTapped(): void {
     if (this.p1Confirmed && this.p2Confirmed) {
@@ -614,10 +698,20 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   /** Update touch UI visibility */
   private updateTouchUI(): void {
-    if (!this.isTouchMode || !this.startButton) return;
+    if (!this.isTouchMode) return;
 
     // Show fight button when both players confirmed
-    this.startButton.setVisible(this.p1Confirmed && this.p2Confirmed);
+    if (this.startButton) {
+      this.startButton.setVisible(this.p1Confirmed && this.p2Confirmed);
+    }
+
+    // Show change buttons when respective player is confirmed
+    if (this.p1ChangeButton) {
+      this.p1ChangeButton.setVisible(this.p1Confirmed);
+    }
+    if (this.p2ChangeButton && this.gameMode === '2P') {
+      this.p2ChangeButton.setVisible(this.p2Confirmed);
+    }
 
     // Update instructions to show current step
     if (this.gameMode === '2P') {
@@ -626,7 +720,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       } else if (!this.p2Confirmed) {
         this.instructionsText.setText('Tap to select P2 fighter (RED)');
       } else {
-        this.instructionsText.setText('Tap FIGHT! to begin • Tap portrait to re-select');
+        this.instructionsText.setText('Tap FIGHT! to begin');
       }
     } else {
       if (!this.p1Confirmed) {
@@ -659,13 +753,57 @@ export class CharacterSelectScene extends Phaser.Scene {
 
       // Continue to stage select
       start: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER),
+
+      // Back to mode select
+      escape: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
     };
+  }
+
+  /** Create mobile back button */
+  private createBackButton(): void {
+    this.backButton = this.add.container(50, 40);
+
+    // Button background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x333344, 0.9);
+    bg.fillRoundedRect(-35, -20, 70, 40, 8);
+    bg.lineStyle(2, 0x666688);
+    bg.strokeRoundedRect(-35, -20, 70, 40, 8);
+    this.backButton.add(bg);
+
+    // Back arrow and text
+    const text = this.add.text(0, 0, '◀ BACK', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px',
+      color: '#ffffff',
+    });
+    text.setOrigin(0.5);
+    this.backButton.add(text);
+
+    // Make interactive
+    this.backButton.setSize(70, 40);
+    this.backButton.setInteractive({ useHandCursor: true });
+    this.backButton.on('pointerdown', () => this.goBack());
+    this.backButton.setDepth(200);
+  }
+
+  /** Go back to mode select */
+  private goBack(): void {
+    this.scene.start('ModeSelectScene');
   }
 
   update(): void {
     this.handleP1Input();
     this.handleP2Input();
     this.handleStart();
+    this.handleEscape();
+  }
+
+  /** Handle escape key to go back */
+  private handleEscape(): void {
+    if (Phaser.Input.Keyboard.JustDown(this.keys.escape)) {
+      this.goBack();
+    }
   }
 
   /** Handle P1 selection input */

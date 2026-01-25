@@ -212,8 +212,10 @@ export function updateFighter(
       break;
   }
 
-  // Decay horizontal velocity (less for dash)
-  const decayRate = fighter.state === FighterState.DASH ? 0.95 : 0.8;
+  // Decay horizontal velocity (ground has stronger friction than air)
+  const isDash = fighter.state === FighterState.DASH;
+  const isAirborne = !fighter.grounded;
+  const decayRate = isDash ? 0.95 : isAirborne ? 0.98 : 0.8;
   fighter.vx *= decayRate;
   if (Math.abs(fighter.vx) < 0.1) fighter.vx = 0;
 }

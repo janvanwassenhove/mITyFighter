@@ -137,9 +137,13 @@ export class TouchControls {
   /** Scale factor based on screen size */
   private scaleFactor = 1;
 
-  constructor(scene: Phaser.Scene, playerId: PlayerId) {
+  /** Whether this is 2-player mode (affects button layout) */
+  private isTwoPlayerMode: boolean;
+
+  constructor(scene: Phaser.Scene, playerId: PlayerId, isTwoPlayerMode = false) {
     this.scene = scene;
     this.playerId = playerId;
+    this.isTwoPlayerMode = isTwoPlayerMode;
 
     // Calculate scale based on screen size
     this.calculateScale();
@@ -202,21 +206,36 @@ export class TouchControls {
 
   /**
    * Create action button configurations
+   * 
+   * In 1P mode: Joystick on left, buttons on right (opposite sides)
+   * In 2P mode: Buttons are placed next to the joystick (same side)
+   *   to avoid overlap with the other player's controls.
+   *   P1: Joystick on left, buttons to the right of joystick
+   *   P2: Joystick on right, buttons to the left of joystick
    */
   private createButtons(): VirtualButton[] {
     const radius = BUTTON_RADIUS * this.scaleFactor;
     const spacing = BUTTON_SPACING * this.scaleFactor;
+    const joystickRadius = JOYSTICK_RADIUS * this.scaleFactor;
     const padding = 40 * this.scaleFactor;
 
-    // Position based on player (P1 = right side, P2 = left side)
-    const baseX = this.playerId === PlayerId.P1
-      ? GAME_WIDTH - padding - radius - spacing
-      : padding + radius + spacing;
+    let baseX: number;
+
+    if (!this.isTwoPlayerMode) {
+      // Single player mode: buttons on opposite side from joystick (right side)
+      baseX = GAME_WIDTH - padding - radius - spacing;
+    } else {
+      // 2-player mode: buttons next to joystick on the same side
+      if (this.playerId === PlayerId.P1) {
+        // P1: joystick on left, buttons to the right of it
+        baseX = padding + joystickRadius * 2 + spacing / 2 + radius;
+      } else {
+        // P2: joystick on right, buttons to the left of it
+        baseX = GAME_WIDTH - padding - joystickRadius * 2 - spacing / 2 - radius - spacing;
+      }
+    }
 
     const baseY = GAME_HEIGHT - padding - radius - spacing / 2;
-
-    // Mirror button positions for P2
-    const xMult = this.playerId === PlayerId.P1 ? 1 : -1;
 
     return [
       {
@@ -229,7 +248,7 @@ export class TouchControls {
       },
       {
         action: 'attack2' as InputAction,
-        x: baseX + spacing * xMult,
+        x: baseX + spacing,
         y: baseY - spacing / 2,
         radius,
         color: 0x4ecdc4, // Cyan
@@ -245,7 +264,7 @@ export class TouchControls {
       },
       {
         action: 'block' as InputAction,
-        x: baseX + spacing * xMult,
+        x: baseX + spacing,
         y: baseY + spacing / 2,
         radius,
         color: 0x95e1d3, // Green
@@ -648,8 +667,9 @@ export class TouchControlsManager {
 
     this.enabled = true;
 
+    const isTwoPlayerMode = players.length > 1;
     for (const playerId of players) {
-      const controls = new TouchControls(scene, playerId);
+      const controls = new TouchControls(scene, playerId, isTwoPlayerMode);
       this.controls.set(playerId, controls);
     }
 
