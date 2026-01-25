@@ -28,6 +28,7 @@ export class ModeSelectScene extends Phaser.Scene {
   private modes: GameMode[] = ['STORY', '1P', '2P'];
   private modeButtons: Phaser.GameObjects.Container[] = [];
   private selectorGraphics!: Phaser.GameObjects.Graphics;
+  private isTransitioning = false;
 
   constructor() {
     super({ key: 'ModeSelectScene' });
@@ -35,6 +36,10 @@ export class ModeSelectScene extends Phaser.Scene {
 
   create(): void {
     logger.info('ModeSelectScene started');
+
+    // Reset state
+    this.isTransitioning = false;
+    this.modeButtons = [];
 
     // Initialize audio manager for this scene
     getAudioManager().init(this);
@@ -309,16 +314,24 @@ export class ModeSelectScene extends Phaser.Scene {
       this.scene.start('TitleScene');
     });
 
-    // Click support
+    // Click/touch support - make the entire container interactive
     this.modeButtons.forEach((btn, index) => {
       const bg = btn.getAt(0) as Phaser.GameObjects.Rectangle | undefined;
       if (!bg) return;
-      bg.setInteractive({ useHandCursor: true });
-      bg.on('pointerover', () => {
+      
+      // Get the size from the background rectangle
+      const width = bg.width;
+      const height = bg.height;
+      
+      // Make the container itself interactive (works better for touch)
+      btn.setSize(width, height);
+      btn.setInteractive({ useHandCursor: true });
+      btn.on('pointerover', () => {
         this.selectedIndex = index;
         this.updateSelection();
       });
-      bg.on('pointerdown', () => {
+      btn.on('pointerdown', () => {
+        logger.info(`pointerdown on button ${index}`);
         this.selectedIndex = index;
         this.updateSelection();
         this.confirmSelection();
@@ -407,8 +420,19 @@ export class ModeSelectScene extends Phaser.Scene {
 
   /** Confirm selection and proceed */
   private confirmSelection(): void {
+    logger.info(`confirmSelection called, selectedIndex=${this.selectedIndex}, isTransitioning=${this.isTransitioning}`);
+    
+    // Prevent multiple calls
+    if (this.isTransitioning) {
+      logger.info('Already transitioning, ignoring');
+      return;
+    }
+    
     const selectedMode = this.modes[this.selectedIndex];
+    logger.info(`Selected mode: ${selectedMode}`);
     if (!selectedMode) return;
+    
+    this.isTransitioning = true;
 
     // Play mode-specific audio
     if (selectedMode === 'STORY') {
@@ -425,23 +449,31 @@ export class ModeSelectScene extends Phaser.Scene {
     // Scale up selected button
     const selectedBtn = this.modeButtons[this.selectedIndex];
 
-    this.tweens.add({
-      targets: selectedBtn,
-      scale: 1.2,
-      alpha: 0,
-      duration: 300,
-      onComplete: () => {
-        if (selectedMode === 'STORY') {
-          // Story mode goes to its own character select
-          this.scene.start('StorySelectScene');
-        } else {
-          // 1P and 2P go to regular character select
-          this.scene.start('CharacterSelectScene', {
-            gameMode: selectedMode,
-          } as ModeSelectData);
-        }
-      },
-    });
+    // Define the transition function
+    const goToNextScene = (): void => {
+      if (selectedMode === 'STORY') {
+        // Story mode goes to its own character select
+        this.scene.start('StorySelectScene');
+      } else {
+        // 1P and 2P go to regular character select
+        this.scene.start('CharacterSelectScene', {
+          gameMode: selectedMode,
+        } as ModeSelectData);
+      }
+    };
+
+    // Animate button if it exists
+    if (selectedBtn) {
+      this.tweens.add({
+        targets: selectedBtn,
+        scale: 1.2,
+        alpha: 0,
+        duration: 300,
+      });
+    }
+
+    // Use time event for reliable transition (works better on mobile)
+    this.time.delayedCall(350, goToNextScene);
 
     logger.info(`Selected game mode: ${selectedMode}`);
   }
