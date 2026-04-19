@@ -1,0 +1,33 @@
+{
+  "frames": [
+    {
+      "filename": "frame_000.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 96,
+        "height": 96
+      },
+      "duration": 80
+    },
+    {
+      "filename": "frame_001.png",
+      "frame": {
+        "x": 96,
+        "y": 0,
+        "width": 96,
+        "height": 96
+      },
+      "duration": 80
+    }
+  ],
+  "meta": {
+    "image": "spritesheet.png",
+    "size": {
+      "w": 192,
+      "h": 96
+    },
+    "format": "RGBA8888",
+    "scale": 1
+  }
+}
