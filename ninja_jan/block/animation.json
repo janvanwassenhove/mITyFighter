@@ -1,0 +1,22 @@
+{
+  "name": "Block",
+  "frameCount": 3,
+  "loop": "once",
+  "frames": [
+    {
+      "index": 0,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 1,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 2,
+      "delay": 60,
+      "hitboxes": []
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 
 import Phaser from 'phaser';
 
-import { getFighterTextureKey } from '../assets/AssetKeys';
+import { getFighterTextureKey, getProfilePicKey } from '../assets/AssetKeys';
 import {
   FIGHTER_IDS,
   FIGHTER_REGISTRY,
@@ -193,20 +193,26 @@ export class CharacterSelectScene extends Phaser.Scene {
       );
       container.add(bg);
 
-      // Fighter preview sprite (using idle frame 0) - MK-style zoomed close-up
+      // Fighter portrait - use profile pic (head-closeup) if available, else idle frame 0
       const fighter = FIGHTER_REGISTRY[fighterId];
+      const profileKey = getProfilePicKey(fighterId, 'head-closeup');
       const textureKey = getFighterTextureKey(fighterId, 'idle');
-      if (fighter && this.textures.exists(textureKey)) {
-        // Scale up aggressively to fill the box (MK style close-up)
+
+      if (fighter && this.textures.exists(profileKey)) {
+        // Use profile pic — scale to fill portrait box exactly
+        const img = this.add.image(0, 0, profileKey);
+        img.setDisplaySize(PORTRAIT_SIZE, PORTRAIT_SIZE);
+        img.setOrigin(0.5, 0.5);
+        container.add(img);
+      } else if (fighter && this.textures.exists(textureKey)) {
+        // Fallback: idle sprite frame 0, zoomed to fill the box
         const scale = (PORTRAIT_SIZE / fighter.frameHeight) * 2.5;
         const sprite = this.add.sprite(0, 0, textureKey, 0);
         sprite.setScale(scale);
-        // Set origin to bottom-center so sprite anchors from feet
         sprite.setOrigin(0.5, 1);
-        // Position at bottom of portrait box
         sprite.setY(PORTRAIT_SIZE / 2);
-        
-        // Create a mask to clip the sprite to the portrait box
+
+        // Mask to clip sprite to portrait box
         const maskShape = this.make.graphics({ x: 0, y: 0 });
         maskShape.fillStyle(0xffffff);
         maskShape.fillRect(
@@ -217,7 +223,7 @@ export class CharacterSelectScene extends Phaser.Scene {
         );
         const mask = maskShape.createGeometryMask();
         sprite.setMask(mask);
-        
+
         container.add(sprite);
       }
 
@@ -277,11 +283,17 @@ export class CharacterSelectScene extends Phaser.Scene {
     panelBg.fillRoundedRect(10, 100, PANEL_WIDTH + 10, GAME_HEIGHT - 160, 8);
     panelBg.fillRoundedRect(GAME_WIDTH - PANEL_WIDTH - 20, 100, PANEL_WIDTH + 10, GAME_HEIGHT - 160, 8);
 
-    // P1 preview (left side)
-    const p1FighterId = FIGHTER_IDS[0] ?? 'lady_pointy_stabby';
+    // P1 preview (left side) — use fighting-pose profile pic if available
+    const p1FighterId = FIGHTER_IDS[0] ?? 'ninja_jan';
+    const p1ProfileKey = getProfilePicKey(p1FighterId, 'fighting-pose');
     const p1TextureKey = getFighterTextureKey(p1FighterId, 'idle');
-    this.p1Preview = this.add.sprite(PREVIEW_X_P1, PREVIEW_Y, p1TextureKey, 0);
-    this.p1Preview.setScale(2.5);
+    const p1PreviewKey = this.textures.exists(p1ProfileKey) ? p1ProfileKey : p1TextureKey;
+    this.p1Preview = this.add.sprite(PREVIEW_X_P1, PREVIEW_Y, p1PreviewKey, 0);
+    if (this.textures.exists(p1ProfileKey)) {
+      this.p1Preview.setDisplaySize(PANEL_WIDTH - 20, PANEL_WIDTH - 20);
+    } else {
+      this.p1Preview.setScale(2.5);
+    }
     this.p1Preview.setFlipX(false);
 
     this.p1NameText = this.add.text(PREVIEW_X_P1, NAME_Y, '', {
@@ -348,11 +360,17 @@ export class CharacterSelectScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    // P2 preview (right side)
-    const p2FighterId = FIGHTER_IDS[1] ?? FIGHTER_IDS[0] ?? 'lady_pointy_stabby';
+    // P2 preview (right side) — use fighting-pose-alt if available
+    const p2FighterId = FIGHTER_IDS[1] ?? FIGHTER_IDS[0] ?? 'ninja_jan';
+    const p2ProfileKey = getProfilePicKey(p2FighterId, 'fighting-pose-alt');
     const p2TextureKey = getFighterTextureKey(p2FighterId, 'idle');
-    this.p2Preview = this.add.sprite(PREVIEW_X_P2, PREVIEW_Y, p2TextureKey, 0);
-    this.p2Preview.setScale(2.5);
+    const p2PreviewKey = this.textures.exists(p2ProfileKey) ? p2ProfileKey : p2TextureKey;
+    this.p2Preview = this.add.sprite(PREVIEW_X_P2, PREVIEW_Y, p2PreviewKey, 0);
+    if (this.textures.exists(p2ProfileKey)) {
+      this.p2Preview.setDisplaySize(PANEL_WIDTH - 20, PANEL_WIDTH - 20);
+    } else {
+      this.p2Preview.setScale(2.5);
+    }
     this.p2Preview.setFlipX(true);
 
     this.p2NameText = this.add.text(PREVIEW_X_P2, NAME_Y, '', {
@@ -896,17 +914,30 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   /** Update preview sprites */
   private updatePreviews(): void {
-    const p1FighterId = FIGHTER_IDS[this.p1Index] ?? 'lady_pointy_stabby';
-    const p2FighterId = FIGHTER_IDS[this.p2Index] ?? 'lady_pointy_stabby';
+    const PREVIEW_SIZE = 220;
+    const p1FighterId = FIGHTER_IDS[this.p1Index] ?? 'ninja_jan';
+    const p2FighterId = FIGHTER_IDS[this.p2Index] ?? 'ninja_jan';
 
+    // P1 preview — prefer fighting-pose profile pic
+    const p1ProfileKey = getProfilePicKey(p1FighterId, 'fighting-pose');
     const p1TextureKey = getFighterTextureKey(p1FighterId, 'idle');
-    const p2TextureKey = getFighterTextureKey(p2FighterId, 'idle');
-
-    if (this.textures.exists(p1TextureKey)) {
+    if (this.textures.exists(p1ProfileKey)) {
+      this.p1Preview.setTexture(p1ProfileKey);
+      this.p1Preview.setDisplaySize(PREVIEW_SIZE, PREVIEW_SIZE);
+    } else if (this.textures.exists(p1TextureKey)) {
       this.p1Preview.setTexture(p1TextureKey, 0);
+      this.p1Preview.setScale(2.5);
     }
-    if (this.textures.exists(p2TextureKey)) {
+
+    // P2 preview — prefer fighting-pose-alt profile pic
+    const p2ProfileKey = getProfilePicKey(p2FighterId, 'fighting-pose-alt');
+    const p2TextureKey = getFighterTextureKey(p2FighterId, 'idle');
+    if (this.textures.exists(p2ProfileKey)) {
+      this.p2Preview.setTexture(p2ProfileKey);
+      this.p2Preview.setDisplaySize(PREVIEW_SIZE, PREVIEW_SIZE);
+    } else if (this.textures.exists(p2TextureKey)) {
       this.p2Preview.setTexture(p2TextureKey, 0);
+      this.p2Preview.setScale(2.5);
     }
 
     const p1Fighter = FIGHTER_REGISTRY[p1FighterId];
@@ -916,7 +947,8 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.p1NameText.setText(p1Fighter?.displayName ?? 'Unknown');
     this.p1TaglineText.setText(`"${p1Fighter?.tagline ?? ''}"`);
     this.p1BioText.setText(p1Fighter?.bio ?? '');
-    this.p1MotivationText.setText(p1Fighter?.motivation ?? '');
+    const p1Special = p1Fighter?.specialCombo ? `SPECIAL: ${p1Fighter.specialCombo}` : '';
+    this.p1MotivationText.setText(`${p1Fighter?.motivation ?? ''}\n\n${p1Special}`);
     
     // Update P2 info (show CPU label in 1P mode)
     const p2Label = this.gameMode === '1P' ? '🤖 CPU' : '';
@@ -924,13 +956,14 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.p2NameText.setText(p2Label ? `${p2Name}\n${p2Label}` : p2Name);
     this.p2TaglineText.setText(`"${p2Fighter?.tagline ?? ''}"`);
     this.p2BioText.setText(p2Fighter?.bio ?? '');
-    this.p2MotivationText.setText(p2Fighter?.motivation ?? '');
+    const p2Special = p2Fighter?.specialCombo ? `SPECIAL: ${p2Fighter.specialCombo}` : '';
+    this.p2MotivationText.setText(`${p2Fighter?.motivation ?? ''}\n\n${p2Special}`);
   }
 
   /** Go to stage selection screen */
   private goToStageSelect(): void {
-    const p1FighterId = FIGHTER_IDS[this.p1Index] ?? 'lady_pointy_stabby';
-    const p2FighterId = FIGHTER_IDS[this.p2Index] ?? 'lady_pointy_stabby';
+    const p1FighterId = FIGHTER_IDS[this.p1Index] ?? 'ninja_jan';
+    const p2FighterId = FIGHTER_IDS[this.p2Index] ?? 'ninja_jan';
 
     logger.info(`Fighters selected: ${p1FighterId} vs ${p2FighterId} (mode: ${this.gameMode})`);
 

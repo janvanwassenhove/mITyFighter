@@ -139,8 +139,8 @@ export function createInitialGameState(): GameStateData {
     phase: GamePhase.TITLE,
     matchConfig: config,
     players: [
-      { fighterId: 'sir_budgetalot', roundsWon: 0, health: config.startingHealth },
-      { fighterId: 'count_cardboardius', roundsWon: 0, health: config.startingHealth },
+      { fighterId: 'ninja_jan', roundsWon: 0, health: config.startingHealth },
+      { fighterId: 'ninja_jan', roundsWon: 0, health: config.startingHealth },
     ],
     round: createInitialRoundState(config),
     matchWinner: null,

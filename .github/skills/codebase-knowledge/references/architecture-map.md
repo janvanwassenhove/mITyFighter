@@ -3,7 +3,7 @@
 ## Top-Level Structure
 
 ```
-mITyFighter/
+DevoxxFighter/
 ├── src/                    → All source code
 │   ├── main.ts             → Entry point: creates Phaser game instance
 │   └── game/

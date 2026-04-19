@@ -57,7 +57,7 @@ export class AboutScene extends Phaser.Scene {
     });
 
     // Game title
-    const gameTitle = this.add.text(GAME_WIDTH / 2, 180, 'mITy FIGHTER', {
+    const gameTitle = this.add.text(GAME_WIDTH / 2, 180, 'DEVOXX FIGHTER', {
       fontFamily: 'Impact, sans-serif',
       fontSize: '48px',
       color: '#ff4444',

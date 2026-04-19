@@ -1,10 +1,10 @@
 ---
 name: doc-first-workflow
-description: "Documentation-first development workflow for mITyFighter. Use when: adding features, modifying code, adding assets, changing registries, or any code change that requires updating docs/ before implementation. Enforces the SPEC_KIT contract."
+description: "Documentation-first development workflow for DevoxxFighter. Use when: adding features, modifying code, adding assets, changing registries, or any code change that requires updating docs/ before implementation. Enforces the SPEC_KIT contract."
 ---
 # Documentation-First Workflow
 
-Enforces the mITyFighter spec-kit contract: **docs before code, always**.
+Enforces the DevoxxFighter spec-kit contract: **docs before code, always**.
 
 ## When to Use
 - Before any code change that touches fighters, backgrounds, actions, UI, controls, or modules

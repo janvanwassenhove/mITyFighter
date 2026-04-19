@@ -1,5 +1,5 @@
 {
-  "name": "mity-fighter",
+  "name": "devoxx-fighter",
   "version": "0.1.0",
   "description": "Production-grade 2D pixel fighting game built with TypeScript, Phaser 3, and Vite",
   "type": "module",

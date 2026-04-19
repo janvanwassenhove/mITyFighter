@@ -528,7 +528,7 @@ function validateBackground(
  */
 function main(): void {
   console.log('='.repeat(60));
-  console.log('mITyFighter Asset Validation');
+  console.log('DevoxxFighter Asset Validation');
   console.log('='.repeat(60));
 
   errors = [];

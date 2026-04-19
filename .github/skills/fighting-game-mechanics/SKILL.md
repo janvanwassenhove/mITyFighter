@@ -1,6 +1,6 @@
 ---
 name: fighting-game-mechanics
-description: "Deep knowledge of arcade 2D fighting game design. Use when: implementing combat systems, frame data, hitboxes, hurtboxes, combo input detection, attack properties, blocking, hitstun, knockback, damage scaling, fighter state machines, balance tuning, dash/jump arcs, or applying classic fighting game patterns (Street Fighter, Guilty Gear, etc.) to mITyFighter code."
+description: "Deep knowledge of arcade 2D fighting game design. Use when: implementing combat systems, frame data, hitboxes, hurtboxes, combo input detection, attack properties, blocking, hitstun, knockback, damage scaling, fighter state machines, balance tuning, dash/jump arcs, or applying classic fighting game patterns (Street Fighter, Guilty Gear, etc.) to DevoxxFighter code."
 ---
 # Fighting Game Mechanics
 

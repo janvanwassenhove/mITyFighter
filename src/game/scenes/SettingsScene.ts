@@ -10,6 +10,7 @@ import Phaser from 'phaser';
 
 import { getAudioManager } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT, PlayerId } from '../config/constants';
+import { getActiveTheme, getActiveThemeId, getThemeList, setActiveTheme, THEME_IDS } from '../config/themes';
 import { getP1Bindings, P2_BINDINGS_NUMPAD, P2_BINDINGS_NO_NUMPAD, type KeyBinding } from '../input/InputBindings';
 import { setKeyboardLayout, type KeyboardLayout } from '../input/KeyboardLayout';
 import { logger } from '../utils/logger';
@@ -59,17 +60,19 @@ export class SettingsScene extends Phaser.Scene {
     // Load saved settings
     this.loadSettings();
 
+    const theme = getActiveTheme();
+
     // Dark background
-    this.cameras.main.setBackgroundColor('#0a0a15');
+    this.cameras.main.setBackgroundColor(theme.colors.background);
 
     // Create background effects
     this.createBackgroundEffects();
 
     // Title
     const title = this.add.text(GAME_WIDTH / 2, 60, 'SETTINGS', {
-      fontFamily: 'Impact, sans-serif',
+      fontFamily: theme.fonts.title,
       fontSize: '56px',
-      color: '#ffcc00',
+      color: theme.colors.primary,
       stroke: '#000000',
       strokeThickness: 6,
       shadow: {
@@ -127,6 +130,7 @@ export class SettingsScene extends Phaser.Scene {
       { key: 'options', label: 'OPTIONS' },
     ];
 
+    const theme = getActiveTheme();
     const tabWidth = 200;
     const startX = GAME_WIDTH / 2 - tabWidth;
     const tabY = 130;
@@ -134,14 +138,14 @@ export class SettingsScene extends Phaser.Scene {
     tabs.forEach((tab, index) => {
       const container = this.add.container(startX + index * tabWidth, tabY);
 
-      const bg = this.add.rectangle(0, 0, tabWidth - 10, 45, 0x222244, 0.8);
-      bg.setStrokeStyle(2, 0x444466);
+      const bg = this.add.rectangle(0, 0, tabWidth - 10, 45, theme.colors.panelHex, 0.8);
+      bg.setStrokeStyle(2, theme.colors.borderHex);
       bg.setInteractive({ useHandCursor: true });
 
       const label = this.add.text(0, 0, tab.label, {
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: theme.fonts.body,
         fontSize: '18px',
-        color: '#ffffff',
+        color: theme.colors.text,
       });
       label.setOrigin(0.5);
 
@@ -162,6 +166,8 @@ export class SettingsScene extends Phaser.Scene {
     this.controlDisplays = [];
     this.controlsContainer.removeAll(true);
 
+    const theme = getActiveTheme();
+
     // Update tab visuals
     this.tabButtons.forEach((container, index) => {
       const bg = container.getAt(0) as Phaser.GameObjects.Rectangle;
@@ -173,13 +179,13 @@ export class SettingsScene extends Phaser.Scene {
         (index === 2 && tab === 'options');
 
       if (isSelected) {
-        bg.setFillStyle(0x334477, 1);
-        bg.setStrokeStyle(3, 0xffcc00);
-        label.setColor('#ffcc00');
+        bg.setFillStyle(theme.colors.activePanelHex, 1);
+        bg.setStrokeStyle(3, theme.colors.activeBorderHex);
+        label.setColor(theme.colors.primary);
       } else {
-        bg.setFillStyle(0x222244, 0.8);
-        bg.setStrokeStyle(2, 0x444466);
-        label.setColor('#ffffff');
+        bg.setFillStyle(theme.colors.panelHex, 0.8);
+        bg.setStrokeStyle(2, theme.colors.borderHex);
+        label.setColor(theme.colors.text);
       }
     });
 
@@ -198,6 +204,7 @@ export class SettingsScene extends Phaser.Scene {
   private showPlayerControls(player: PlayerId): void {
     const startY = 190;
     const rowHeight = 45;
+    const theme = getActiveTheme();
 
     // Get bindings for this player
     const bindings = player === PlayerId.P1 
@@ -229,17 +236,17 @@ export class SettingsScene extends Phaser.Scene {
 
     // Column headers
     const movementHeader = this.add.text(GAME_WIDTH / 4, startY, '🎮 MOVEMENT', {
-      fontFamily: 'Arial, sans-serif',
+      fontFamily: theme.fonts.body,
       fontSize: '20px',
-      color: '#ffcc00',
+      color: theme.colors.primary,
     });
     movementHeader.setOrigin(0.5);
     this.controlsContainer.add(movementHeader);
 
     const combatHeader = this.add.text(GAME_WIDTH * 3 / 4, startY, '⚔️ COMBAT', {
-      fontFamily: 'Arial, sans-serif',
+      fontFamily: theme.fonts.body,
       fontSize: '20px',
-      color: '#ffcc00',
+      color: theme.colors.primary,
     });
     combatHeader.setOrigin(0.5);
     this.controlsContainer.add(combatHeader);
@@ -411,10 +418,45 @@ export class SettingsScene extends Phaser.Scene {
     });
     this.controlsContainer.add(numpadValue);
 
+    // Theme option
+    const themeLabel = this.add.text(GAME_WIDTH / 2 - 150, startY + rowHeight * 2, 'Theme:', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '20px',
+      color: '#cccccc',
+    });
+    themeLabel.setOrigin(0, 0.5);
+    this.controlsContainer.add(themeLabel);
+
+    const currentTheme = getActiveTheme();
+    const themeValue = this.add.text(GAME_WIDTH / 2 + 100, startY + rowHeight * 2, currentTheme.name, {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '20px',
+      color: currentTheme.colors.primary,
+      backgroundColor: '#113311',
+      padding: { x: 12, y: 6 },
+    });
+    themeValue.setOrigin(0.5);
+    themeValue.setInteractive({ useHandCursor: true });
+    themeValue.on('pointerdown', () => {
+      const themes = getThemeList();
+      const currentId = getActiveThemeId();
+      const currentIdx = THEME_IDS.indexOf(currentId);
+      const nextIdx = (currentIdx + 1) % themes.length;
+      const nextId = THEME_IDS[nextIdx]!;
+      const nextTheme = setActiveTheme(nextId);
+      themeValue.setText(nextTheme.name);
+      themeValue.setColor(nextTheme.colors.primary);
+      // Reload scene to apply theme
+      this.time.delayedCall(200, () => {
+        this.scene.restart();
+      });
+    });
+    this.controlsContainer.add(themeValue);
+
     // Info text
     const infoText = this.add.text(
       GAME_WIDTH / 2,
-      startY + rowHeight * 2 + 20,
+      startY + rowHeight * 3 + 20,
       'QWERTY: WASD for movement\nAZERTY: ZQSD for movement\n\nNumpad: P2 uses arrow keys + numpad\nNo Numpad: P2 uses IJKL + UOPY',
       {
         fontFamily: 'Arial, sans-serif',
@@ -571,14 +613,14 @@ export class SettingsScene extends Phaser.Scene {
     this.useNumpad = true;
     this.keyboardLayout = 'qwerty';
     setKeyboardLayout('qwerty');
-    localStorage.removeItem('mityFighterSettings');
+    localStorage.removeItem('devoxxFighterSettings');
     this.showTab('options');
   }
 
   /** Load settings from localStorage */
   private loadSettings(): void {
     try {
-      const saved = localStorage.getItem('mityFighterSettings');
+      const saved = localStorage.getItem('devoxxFighterSettings');
       if (saved) {
         const settings = JSON.parse(saved);
         this.useNumpad = settings.useNumpad ?? true;
@@ -606,7 +648,7 @@ export class SettingsScene extends Phaser.Scene {
         customP1Bindings: Object.fromEntries(this.customP1Bindings),
         customP2Bindings: Object.fromEntries(this.customP2Bindings),
       };
-      localStorage.setItem('mityFighterSettings', JSON.stringify(settings));
+      localStorage.setItem('devoxxFighterSettings', JSON.stringify(settings));
     } catch (e) {
       logger.warn('Failed to save settings:', e);
     }

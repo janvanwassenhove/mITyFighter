@@ -55,7 +55,7 @@ jobs:
         run: npm run build
         env:
           # This will be automatically set to the repo name by GitHub Actions
-          # e.g., /mITyFighter/ for https://username.github.io/mITyFighter/
+          # e.g., /DevoxxFighter/ for https://username.github.io/DevoxxFighter/
           BASE_URL: /${{ github.event.repository.name }}/
 
       - name: Setup Pages

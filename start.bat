@@ -1,8 +1,8 @@
 @echo off
-title mITyFighter
+title DevoxxFighter
 
 echo ========================================
-echo         mITyFighter Game Launcher
+echo         DevoxxFighter Game Launcher
 echo ========================================
 echo.
 

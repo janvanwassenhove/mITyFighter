@@ -27,7 +27,7 @@ Frame advantage (on hit)  = hitstun - recovery
 Frame advantage (on block) = blockstun - recovery
 ```
 
-## mITyFighter Attack Data
+## DevoxxFighter Attack Data
 
 Current attack properties are defined in `ATTACK_DATA` inside `src/game/sim/FighterState.ts`:
 

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Main entry point for mITyFighter
+ * @fileoverview Main entry point for DevoxxFighter
  * @see docs/SPEC_KIT.md - This file follows the spec-kit contract
  */
 

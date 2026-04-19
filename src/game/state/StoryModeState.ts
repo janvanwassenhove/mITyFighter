@@ -57,8 +57,27 @@ const REGULAR_FIGHTS = 5;
 /** Maximum continues */
 const MAX_CONTINUES = 3;
 
-/** Final boss fighter ID - the most powerful opponent */
-export const FINAL_BOSS_ID: FighterId = 'elder_honkstorm';
+/** Preferred final boss fighter ID (may not exist if pack is missing) */
+const PREFERRED_BOSS_ID: FighterId = 'elder_honkstorm';
+
+/**
+ * Resolve the actual boss fighter ID.
+ * Falls back to a random available fighter, or the player's own fighter for mirror match.
+ *
+ * @param playerFighterId - The player's fighter
+ * @returns A valid fighter ID to use as boss
+ */
+function resolveBossId(playerFighterId: FighterId): FighterId {
+  if (FIGHTER_IDS.includes(PREFERRED_BOSS_ID) && PREFERRED_BOSS_ID !== playerFighterId) {
+    return PREFERRED_BOSS_ID;
+  }
+  // Pick a different fighter if possible, otherwise mirror match
+  const others = FIGHTER_IDS.filter(id => id !== playerFighterId);
+  return others.length > 0 ? others[others.length - 1]! : playerFighterId;
+}
+
+/** Exported for backward compatibility */
+export const FINAL_BOSS_ID: FighterId = PREFERRED_BOSS_ID;
 
 // =============================================================================
 // Story Generation
@@ -74,15 +93,24 @@ export const FINAL_BOSS_ID: FighterId = 'elder_honkstorm';
  */
 export function generateStoryFights(playerFighterId: FighterId, difficultyOverride?: AIDifficulty): StoryFight[] {
   const fights: StoryFight[] = [];
-  
-  // Get available opponents (excluding player's fighter and final boss)
-  const availableOpponents = FIGHTER_IDS.filter(
-    id => id !== playerFighterId && id !== FINAL_BOSS_ID
+  const bossId = resolveBossId(playerFighterId);
+
+  // Get available opponents (excluding player's fighter and the boss)
+  let availableOpponents = FIGHTER_IDS.filter(
+    id => id !== playerFighterId && id !== bossId
   );
+
+  // If no other fighters are available, allow mirror matches (fight yourself)
+  if (availableOpponents.length === 0) {
+    availableOpponents = [playerFighterId];
+  }
   
-  // Shuffle and pick opponents
+  // Shuffle and pick opponents, repeating if needed to fill REGULAR_FIGHTS slots
   const shuffled = [...availableOpponents].sort(() => Math.random() - 0.5);
-  const selectedOpponents = shuffled.slice(0, REGULAR_FIGHTS);
+  const selectedOpponents: FighterId[] = [];
+  for (let i = 0; i < REGULAR_FIGHTS; i++) {
+    selectedOpponents.push(shuffled[i % shuffled.length]!);
+  }
   
   // Difficulty progression: if override provided, all fights use that difficulty (except boss)
   // If no override, use the default progression
@@ -93,6 +121,12 @@ export function generateStoryFights(playerFighterId: FighterId, difficultyOverri
     const progression: AIDifficulty[] = ['easy', 'easy', 'medium', 'medium', 'hard'];
     return progression[index] ?? 'medium';
   };
+
+  // Safe stage resolver — always returns a valid stage ID
+  const getStageId = (index: number): BackgroundId => {
+    if (BACKGROUND_IDS.length === 0) return '' as BackgroundId;
+    return BACKGROUND_IDS[index % BACKGROUND_IDS.length]!;
+  };
   
   // Get player info for personalized text
   const player = FIGHTER_REGISTRY[playerFighterId];
@@ -100,12 +134,10 @@ export function generateStoryFights(playerFighterId: FighterId, difficultyOverri
   // Generate regular fights
   selectedOpponents.forEach((opponentId, index) => {
     const opponent = FIGHTER_REGISTRY[opponentId];
-    const stageIndex = index % BACKGROUND_IDS.length;
-    const stageId = BACKGROUND_IDS[stageIndex] ?? 'pit';
     
     fights.push({
       opponentId,
-      stageId,
+      stageId: getStageId(index),
       difficulty: getDifficulty(index),
       preFightText: generatePreFightText(player?.displayName ?? 'Fighter', opponent?.displayName ?? 'Opponent', index),
       victoryText: generateVictoryText(player?.displayName ?? 'Fighter', opponent?.displayName ?? 'Opponent', index),
@@ -114,12 +146,11 @@ export function generateStoryFights(playerFighterId: FighterId, difficultyOverri
   });
   
   // Add final boss fight
-  const boss = FIGHTER_REGISTRY[FINAL_BOSS_ID];
-  const bossStage: BackgroundId = 'throne';
+  const boss = FIGHTER_REGISTRY[bossId];
   
   fights.push({
-    opponentId: FINAL_BOSS_ID,
-    stageId: BACKGROUND_IDS.includes(bossStage) ? bossStage : BACKGROUND_IDS[0] ?? 'pit',
+    opponentId: bossId,
+    stageId: getStageId(REGULAR_FIGHTS),
     difficulty: 'nightmare',
     preFightText: generateBossPreFightText(player?.displayName ?? 'Fighter', boss?.displayName ?? 'The Boss'),
     victoryText: generateBossVictoryText(player?.displayName ?? 'Fighter'),

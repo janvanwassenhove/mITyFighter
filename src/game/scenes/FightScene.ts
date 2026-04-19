@@ -7,24 +7,26 @@
 
 import Phaser from 'phaser';
 
-import { getFighterTextureKey } from '../assets/AssetKeys';
+import { getFighterTextureKey, getFighterAnimationKey } from '../assets/AssetKeys';
+import type { ActionId } from '../assets/AssetKeys';
 import type { BackgroundId } from '../assets/backgroundRegistry';
 import { BACKGROUND_REGISTRY } from '../assets/backgroundRegistry';
 import type { FighterId } from '../assets/fighterRegistry';
 import { FIGHTER_REGISTRY } from '../assets/fighterRegistry';
 import { getAudioManager } from '../audio/AudioManager';
-import { GAME_WIDTH, GAME_HEIGHT, PlayerId } from '../config/constants';
+import { GAME_WIDTH, GAME_HEIGHT, PlayerId, P2_MIRROR_TINT } from '../config/constants';
 import { getP1PhaserKeyCodes } from '../input/KeyboardLayout';
 import {
   TouchControls,
   TouchControlsManager,
 } from '../input/TouchControls';
-import { updateFighter, resolveCombat } from '../sim/CombatSystem';
+import { updateFighter, resolveCombat, setFighterWin, setFighterIntro } from '../sim/CombatSystem';
 import {
   type FighterRuntimeState,
   FighterState,
   createFighterState,
   FIGHTER_PHYSICS,
+  stateToActionId,
 } from '../sim/FighterState';
 import { FightingAI, type AIDifficulty } from '../sim/FightingAI';
 import type { InputAction } from '../sim/InputFrame';
@@ -326,34 +328,9 @@ export class FightScene extends Phaser.Scene {
     // P2 starts facing left (toward P1)
     this.p2Sprite.setFlipX(true);
 
-    // Create animations for both fighters
-    this.createFighterAnimations(this.p1FighterId, p1Fighter.frameWidth);
-    this.createFighterAnimations(this.p2FighterId, p2Fighter.frameWidth);
-  }
-
-  /** Create animations for a fighter */
-  private createFighterAnimations(fighterId: FighterId, _frameWidth: number): void {
-    const animations = ['idle', 'walk', 'attack1', 'attack2', 'hurt', 'dead'] as const;
-
-    for (const anim of animations) {
-      const key = getFighterTextureKey(fighterId, anim);
-      const animKey = `${fighterId}_${anim}`;
-
-      if (this.anims.exists(animKey)) continue;
-      if (!this.textures.exists(key)) continue;
-
-      const frameCount = this.textures.get(key).frameTotal - 1;
-      const frameRate = anim === 'idle' ? 8 : anim === 'walk' ? 10 : 12;
-
-      this.anims.create({
-        key: animKey,
-        frames: this.anims.generateFrameNumbers(key, {
-          start: 0,
-          end: Math.max(0, frameCount - 1),
-        }),
-        frameRate,
-        repeat: anim === 'idle' || anim === 'walk' ? -1 : 0,
-      });
+    // Apply P2 mirror-match tint if same character
+    if (this.p1FighterId === this.p2FighterId) {
+      this.p2Sprite.setTint(P2_MIRROR_TINT);
     }
   }
 
@@ -461,6 +438,11 @@ export class FightScene extends Phaser.Scene {
     if (this.p2AI) {
       this.p2AI.reset();
     }
+
+    // Set fighters to intro state
+    setFighterIntro(this.p1State);
+    setFighterIntro(this.p2State);
+    this.updateSprites();
 
     // Update UI
     this.healthBarUI.setHealth(100, 100);
@@ -783,28 +765,9 @@ export class FightScene extends Phaser.Scene {
     fighterId: FighterId,
     state: FighterRuntimeState
   ): void {
-    let animKey: string;
-
-    switch (state.state) {
-      case FighterState.WALK:
-      case FighterState.RUN:
-        animKey = `${fighterId}_walk`;
-        break;
-      case FighterState.ATTACK1:
-        animKey = `${fighterId}_attack1`;
-        break;
-      case FighterState.ATTACK2:
-        animKey = `${fighterId}_attack2`;
-        break;
-      case FighterState.HURT:
-        animKey = `${fighterId}_hurt`;
-        break;
-      case FighterState.DEAD:
-        animKey = `${fighterId}_dead`;
-        break;
-      default:
-        animKey = `${fighterId}_idle`;
-    }
+    // Map fighter state to action ID using the sim layer helper
+    const actionStr = stateToActionId(state.state);
+    const animKey = getFighterAnimationKey(fighterId, actionStr as ActionId);
 
     if (
       this.anims.exists(animKey) &&
@@ -819,12 +782,16 @@ export class FightScene extends Phaser.Scene {
     this.fightState = FightState.KO;
     this.roundTimerEvent?.remove();
 
-    // Set loser to dead state
+    // Set loser to dead state, winner to win state
     if (this.p1PlayerState.health <= 0) {
       this.p1State.state = FighterState.DEAD;
+      this.p1State.stateFrames = 0;
+      setFighterWin(this.p2State);
     }
     if (this.p2PlayerState.health <= 0) {
       this.p2State.state = FighterState.DEAD;
+      this.p2State.stateFrames = 0;
+      setFighterWin(this.p1State);
     }
 
     this.updateSprites();

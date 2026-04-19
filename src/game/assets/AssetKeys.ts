@@ -11,37 +11,22 @@
 
 /**
  * Canonical action identifiers.
- * Add new actions here when extending the game.
+ * Pack folder names are mapped to these via PACK_ACTION_MAP in PackTypes.ts.
  */
 export const ACTION_IDS = [
   'idle',
-  'idle2',
   'walk',
   'run',
   'jump',
+  'crouch',
+  'block',
   'hurt',
   'dead',
   'attack1',
   'attack2',
-  'attack3',
   'special',
-  'cast',
-  'eating',
-  'spine',
-  'blade',
-  'kunai',
-  'dart',
-  'shot',
-  'disguise',
-  'charge',
-  'charge1',
-  'charge2',
-  'fire1',
-  'fire2',
-  'protect',
-  'protection',
-  'lightball',
-  'lightcharge',
+  'win',
+  'intro',
 ] as const;
 
 /** Type for action identifiers */
@@ -174,53 +159,16 @@ export function parseBackgroundTextureKey(key: string): string | null {
 }
 
 // =============================================================================
-// Filename Mapping
+// Profile Pic Keys
 // =============================================================================
 
 /**
- * Map action ID to expected filename.
- * This is used for registry validation and auto-detection.
+ * Generate texture key for a fighter profile pic.
+ *
+ * @param fighterId - Fighter identifier
+ * @param picType - Profile pic type (e.g., 'head-closeup', 'fighting-pose')
+ * @returns Texture key in format "profile/<fighterId>/<picType>"
  */
-export const ACTION_TO_FILENAME: Record<ActionId, string> = {
-  idle: 'Idle.png',
-  idle2: 'Idle_2.png',
-  walk: 'Walk.png',
-  run: 'Run.png',
-  jump: 'Jump.png',
-  hurt: 'Hurt.png',
-  dead: 'Dead.png',
-  attack1: 'Attack_1.png',
-  attack2: 'Attack_2.png',
-  attack3: 'Attack_3.png',
-  special: 'Special.png',
-  cast: 'Cast.png',
-  eating: 'Eating.png',
-  spine: 'Spine.png',
-  blade: 'Blade.png',
-  kunai: 'Kunai.png',
-  dart: 'Dart.png',
-  shot: 'Shot.png',
-  disguise: 'Disguise.png',
-  charge: 'Charge.png',
-  charge1: 'Charge_1.png',
-  charge2: 'Charge_2.png',
-  fire1: 'Fire_1.png',
-  fire2: 'Fire_2.png',
-  protect: 'Protect.png',
-  protection: 'Protection.png',
-  lightball: 'Light_ball.png',
-  lightcharge: 'Light_charge.png',
-};
-
-/**
- * Map filename to action ID.
- */
-export const FILENAME_TO_ACTION: Record<string, ActionId> = Object.entries(
-  ACTION_TO_FILENAME
-).reduce(
-  (acc, [action, filename]) => {
-    acc[filename] = action as ActionId;
-    return acc;
-  },
-  {} as Record<string, ActionId>
-);
+export function getProfilePicKey(fighterId: string, picType: string): string {
+  return `profile/${fighterId}/${picType}`;
+}

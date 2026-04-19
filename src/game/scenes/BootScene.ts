@@ -7,7 +7,7 @@
 import Phaser from 'phaser';
 
 import { loadBackgroundsFromJson } from '../assets/backgroundRegistry';
-import { loadFightersFromJson } from '../assets/fighterRegistry';
+import { loadFightersFromPacks } from '../assets/fighterRegistry';
 import { loadAudioFromJson } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
 import { detectKeyboardLayout } from '../input/KeyboardLayout';
@@ -59,7 +59,7 @@ export class BootScene extends Phaser.Scene {
       
       // Load all registries in parallel
       await Promise.all([
-        loadFightersFromJson(),
+        loadFightersFromPacks(),
         loadBackgroundsFromJson(),
         loadAudioFromJson(),
       ]);

@@ -50,42 +50,11 @@ export const TICK_DURATION_MS = 1000 / TICK_RATE;
 // Animations
 // =============================================================================
 
-/** Default animation frame rate */
-export const DEFAULT_FRAME_RATE = 10;
-
-/** Frame rates for specific actions */
-export const ACTION_FRAME_RATES: Partial<Record<ActionId, number>> = {
-  idle: 8,
-  idle2: 8,
-  walk: 10,
-  run: 12,
-  jump: 12,
-  hurt: 10,
-  dead: 10,
-  attack1: 15,
-  attack2: 15,
-  attack3: 15,
-  special: 12,
-  cast: 12,
-  eating: 8,
-  spine: 15,
-  blade: 15,
-  kunai: 15,
-  dart: 15,
-  shot: 15,
-  disguise: 10,
-};
-
-/** Actions that loop continuously */
-export const LOOPING_ACTIONS: readonly ActionId[] = [
-  'idle',
-  'idle2',
-  'walk',
-  'run',
-] as const;
-
 /** Fallback actions when idle is not available */
-export const IDLE_FALLBACKS: readonly ActionId[] = ['idle', 'idle2'] as const;
+export const IDLE_FALLBACKS: readonly ActionId[] = ['idle'] as const;
+
+/** P2 mirror-match tint color (blueish shift) */
+export const P2_MIRROR_TINT = 0x8888ff;
 
 // =============================================================================
 // Players

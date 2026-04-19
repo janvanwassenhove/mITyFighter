@@ -1,6 +1,6 @@
 ---
 name: self-maintenance
-description: "Self-maintaining instructions and skills for mITyFighter. Use when: a feature was just added, code was modified, a new module/scene/system was created, registries changed, conventions evolved, or any structural change happened. Ensures agent instructions, skills, and docs stay synchronized with the actual codebase."
+description: "Self-maintaining instructions and skills for DevoxxFighter. Use when: a feature was just added, code was modified, a new module/scene/system was created, registries changed, conventions evolved, or any structural change happened. Ensures agent instructions, skills, and docs stay synchronized with the actual codebase."
 ---
 # Self-Maintenance Protocol
 
@@ -58,7 +58,7 @@ If domain knowledge expanded:
 
 If the change affects how the agent should behave:
 
-- **New convention** → Update `.github/copilot-instructions.md` and `.github/agents/mity-engineer.agent.md`
+- **New convention** → Update `.github/copilot-instructions.md` and `.github/agents/DevoxxFighter-engineer.agent.md`
 - **New validation command** → Update the validation section in both files
 - **New module boundary** → Update the architecture section in the agent file
 

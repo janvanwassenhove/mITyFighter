@@ -1,15 +1,39 @@
 /**
- * @fileoverview Fighter registry with dynamic JSON loading support
+ * @fileoverview Fighter registry with dynamic pack loading support
  * @see docs/SPEC_KIT.md - This file follows the spec-kit contract
- * @see docs/ASSETS.md - Fighter asset conventions
+ * @see docs/ASSETS.md - Pack format conventions
  * @see docs/EXTENSIBILITY.md - How to add new fighters
  */
 
 import type { ActionId } from './AssetKeys';
+import {
+  loadPackIndex,
+  loadPackManifest,
+  storeManifest,
+} from './PackLoader';
+import type {
+  PackManifest,
+  PackProfilePic,
+} from './PackTypes';
+import { resolvePackAction, DEFAULT_SPECIAL_COMBO } from './PackTypes';
 
 // =============================================================================
 // Types
 // =============================================================================
+
+/**
+ * Animation data stored per action in the registry.
+ */
+export interface FighterAnimationData {
+  /** Whether this animation loops */
+  readonly loop: boolean;
+  /** Total frame count */
+  readonly frameCount: number;
+  /** Per-frame delays in ms */
+  readonly frameDelays: readonly number[];
+  /** Pack folder name (for spritesheet path resolution) */
+  readonly folder: string;
+}
 
 /**
  * Fighter registry entry type.
@@ -25,94 +49,127 @@ export interface FighterRegistryEntry {
   readonly bio: string;
   /** Character motivation */
   readonly motivation: string;
-  /** Base path relative to assets folder */
-  readonly basePath: string;
-  /** Frame width in pixels (default 128) */
+  /** Frame width in pixels */
   readonly frameWidth: number;
-  /** Frame height in pixels (default 128) */
+  /** Frame height in pixels */
   readonly frameHeight: number;
-  /** Action to filename mapping */
-  readonly actions: Partial<Record<ActionId, string>>;
-}
-
-/**
- * JSON structure for fighters data file
- */
-export interface FightersJsonData {
-  fighters: FighterRegistryEntry[];
+  /** Available actions mapped to animation data */
+  readonly actions: Partial<Record<ActionId, FighterAnimationData>>;
+  /** Profile pictures */
+  readonly profilePics: readonly PackProfilePic[];
+  /** Special combo display notation */
+  readonly specialCombo: string;
 }
 
 // =============================================================================
 // Dynamic Registry Storage
 // =============================================================================
 
-/** Dynamic fighter registry (populated from JSON) */
+/** Dynamic fighter registry (populated from packs) */
 let fighterRegistry: Record<string, FighterRegistryEntry> = {};
 
-/** Array of all fighter IDs (populated from JSON) */
+/** Array of all fighter IDs (populated from packs) */
 let fighterIds: string[] = [];
 
 /** Flag to check if registry is loaded */
 let isLoaded = false;
 
 // =============================================================================
-// JSON Loading
+// Pack Loading
 // =============================================================================
 
 /**
- * Load fighters from JSON file.
- * Call this during game initialization before accessing registry.
- * 
- * @returns Promise that resolves when fighters are loaded
+ * Load fighters from pack manifests.
+ * Fetches packs.json, then loads each pack's manifest, and populates the registry.
+ *
+ * @returns Promise that resolves when all packs are loaded
  */
-export async function loadFightersFromJson(): Promise<void> {
+export async function loadFightersFromPacks(): Promise<void> {
   try {
-    // eslint-disable-next-line no-undef
-    const response = await fetch('data/fighters.json');
-    if (!response.ok) {
-      throw new Error(`Failed to load fighters.json: ${response.status}`);
-    }
-    
-    const data: FightersJsonData = await response.json();
-    
-    // Build registry from JSON data
+    const packIds = await loadPackIndex();
+
+    // Load all manifests in parallel
+    const manifestPromises = packIds.map((id) => loadPackManifest(id));
+    const packManifests = await Promise.all(manifestPromises);
+
+    // Build registry from manifests
     fighterRegistry = {};
     fighterIds = [];
-    
-    for (const fighter of data.fighters) {
-      fighterRegistry[fighter.id] = fighter;
-      fighterIds.push(fighter.id);
+
+    for (const manifest of packManifests) {
+      const entry = manifestToRegistryEntry(manifest);
+      fighterRegistry[entry.id] = entry;
+      fighterIds.push(entry.id);
+      storeManifest(manifest);
     }
-    
+
     isLoaded = true;
     // eslint-disable-next-line no-console
-    console.log(`Loaded ${fighterIds.length} fighters from JSON`);
+    console.log(`Loaded ${fighterIds.length} fighters from packs`);
   } catch (error) {
-    console.error('Error loading fighters from JSON:', error);
+    // eslint-disable-next-line no-console
+    console.error('Error loading fighters from packs:', error);
     throw error;
   }
 }
 
 /**
+ * Convert a PackManifest into a FighterRegistryEntry.
+ *
+ * @param manifest - Pack manifest
+ * @returns Fighter registry entry
+ */
+function manifestToRegistryEntry(manifest: PackManifest): FighterRegistryEntry {
+  const actions: Partial<Record<ActionId, FighterAnimationData>> = {};
+
+  for (const anim of manifest.animations) {
+    const actionId = resolvePackAction(anim.folder);
+    if (!actionId) continue;
+
+    actions[actionId] = {
+      loop: anim.loop === 'loop',
+      frameCount: anim.frameCount,
+      frameDelays: anim.frames.map((f) => f.delay),
+      folder: anim.folder,
+    };
+  }
+
+  return {
+    id: manifest.character.id,
+    displayName: manifest.character.displayName,
+    tagline: manifest.character.tagline,
+    bio: manifest.character.bio,
+    motivation: manifest.character.motivation,
+    frameWidth: manifest.spriteSize.width,
+    frameHeight: manifest.spriteSize.height,
+    actions,
+    profilePics: manifest.profilePics,
+    specialCombo: DEFAULT_SPECIAL_COMBO,
+  };
+}
+
+/**
  * Check if registry is loaded.
- * @returns True if registry has been loaded from JSON
+ *
+ * @returns True if registry has been loaded from packs
  */
 export function isFighterRegistryLoaded(): boolean {
   return isLoaded;
 }
 
 // =============================================================================
-// Registry Access (Backward Compatible)
+// Registry Access
 // =============================================================================
 
 /**
  * Get the fighter registry object.
- * Note: Returns a read-only view of the dynamically loaded registry.
+ *
  * @returns Read-only fighter registry
  */
 export function getFighterRegistry(): Readonly<Record<string, FighterRegistryEntry>> {
   if (!isLoaded) {
-    console.warn('Fighter registry accessed before loading from JSON');
+    // eslint-disable-next-line no-console
+    console.warn('Fighter registry accessed before loading from packs');
   }
   return fighterRegistry;
 }
@@ -147,10 +204,12 @@ export const FIGHTER_REGISTRY = new Proxy({} as Record<string, FighterRegistryEn
 // Type Exports
 // =============================================================================
 
-/** Fighter ID type - now a string since registry is dynamic */
+/** Fighter ID type - string since registry is dynamic */
 export type FighterId = string;
 
-/** Get array of all fighter IDs
+/**
+ * Get array of all fighter IDs.
+ *
  * @returns Array of fighter IDs
  */
 export function getFighterIds(): readonly string[] {
@@ -178,7 +237,9 @@ export const FIGHTER_IDS: readonly string[] = new Proxy([] as string[], {
   },
 });
 
-/** Get number of registered fighters
+/**
+ * Get number of registered fighters.
+ *
  * @returns Number of fighters
  */
 export function getFighterCount(): number {
