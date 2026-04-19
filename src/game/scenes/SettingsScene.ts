@@ -54,6 +54,10 @@ export class SettingsScene extends Phaser.Scene {
   create(): void {
     logger.info('SettingsScene started');
 
+    // Reset state for scene re-entry
+    this.tabButtons = [];
+    this.controlDisplays = [];
+
     // Initialize audio manager for this scene
     getAudioManager().init(this);
 

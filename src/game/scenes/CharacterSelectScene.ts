@@ -122,6 +122,9 @@ export class CharacterSelectScene extends Phaser.Scene {
   create(): void {
     logger.info('CharacterSelectScene started');
 
+    // Reset state for scene re-entry
+    this.portraits = [];
+
     // Initialize audio manager for this scene
     getAudioManager().init(this);
     
