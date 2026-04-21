@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "character": {
     "id": "ninja_jan",
-    "displayName": "ninja jan",
-    "tagline": "CAW. That means 'prepare for violence'.",
-    "bio": "A crow demon with military discipline and the manners of a flying tax auditor. He steals shiny objects, secrets, and occasionally someone's identity for fun. He salutes before attacking, which somehow makes it ruder.",
-    "motivation": "To win the trophy and mount it in his nest, alongside 14 stolen wedding rings and a traffic cone."
+    "displayName": "mITy.John",
+    "tagline": "Architect by day, accidental menace by coffee.",
+    "bio": "Forged in legacy systems and obscure documentation caves, mITy.John once optimized a toaster into a cloud-native platform. He fights using Agile Karate, surprise architecture diagrams, and a mysterious rubber duck of judgement. Rumour says he can refactor opponents mid-air.",
+    "motivation": "To restore balance to the backlog, defeat bad requirements, and finally prove tabs were never the enemy."
   },
   "spriteSize": {
     "width": 128,

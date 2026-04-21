@@ -4,9 +4,9 @@
   "character": {
     "id": "kungfu_bart",
     "displayName": "Kungfu Bart",
-    "tagline": "",
-    "bio": "Uploaded reference image for Kungfu Bart (identity locked)",
-    "motivation": ""
+    "tagline": "Calm hands. Violent PowerPoints.",
+    "bio": "Raised in the sacred monasteries of Enterprise Delivery, Kungfu Bart mastered the forbidden arts of stakeholder hypnosis and slide-deck combat. Armed with spreadsheets, silent disappointment, and spinning roundhouse governance, he has defeated many MVPs before breakfast.",
+    "motivation": "To punish vague roadmaps, destroy pointless meetings, and avenge every project launched without architecture."
   },
   "spriteSize": {
     "width": 64,
