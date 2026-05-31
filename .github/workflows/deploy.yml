@@ -1,11 +1,11 @@
 # GitHub Pages deployment workflow
-# Deploys main branch to root, DevFighter to /DevFighter/, and DevoxxFighter to /DevoxxFighter/
+# Deploys main branch to root, TechFighter to /TechFighter/, and DevoxxFighter to /DevoxxFighter/
 
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, DevFighter, DevoxxFighter]
+    branches: [main, TechFighter, DevoxxFighter]
   # Allow manual trigger from Actions tab
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job — builds main (root), DevFighter (sub-path), and DevoxxFighter (sub-path)
+  # Build job — builds main (root), TechFighter (sub-path), and DevoxxFighter (sub-path)
   build:
     runs-on: ubuntu-latest
     steps:
@@ -65,39 +65,39 @@ jobs:
         env:
           BASE_URL: /${{ github.event.repository.name }}/
 
-      # ── DevFighter branch (sub-path /DevFighter/) ─────
-      - name: Checkout DevFighter branch
+      # ── TechFighter branch (sub-path /TechFighter/) ─────
+      - name: Checkout TechFighter branch
         uses: actions/checkout@v4
         with:
-          ref: DevFighter
-          path: dev-branch
+          ref: TechFighter
+          path: tech-branch
 
-      - name: Install dependencies (DevFighter)
-        working-directory: dev-branch
+      - name: Install dependencies (TechFighter)
+        working-directory: tech-branch
         run: npm ci
 
-      - name: Lint (DevFighter)
-        working-directory: dev-branch
+      - name: Lint (TechFighter)
+        working-directory: tech-branch
         run: npm run lint
 
-      - name: Type check (DevFighter)
-        working-directory: dev-branch
+      - name: Type check (TechFighter)
+        working-directory: tech-branch
         run: npm run typecheck
 
-      - name: Tests (DevFighter)
-        working-directory: dev-branch
+      - name: Tests (TechFighter)
+        working-directory: tech-branch
         run: npm run test
 
-      - name: Validate assets (DevFighter)
-        working-directory: dev-branch
+      - name: Validate assets (TechFighter)
+        working-directory: tech-branch
         run: npm run validate:assets
         continue-on-error: true
 
-      - name: Build DevFighter
-        working-directory: dev-branch
+      - name: Build TechFighter
+        working-directory: tech-branch
         run: npm run build
         env:
-          BASE_URL: /${{ github.event.repository.name }}/DevFighter/
+          BASE_URL: /${{ github.event.repository.name }}/TechFighter/
 
       # ── DevoxxFighter branch (sub-path /DevoxxFighter/) ─────
       - name: Checkout DevoxxFighter branch
@@ -136,10 +136,10 @@ jobs:
       # ── Assemble combined deployment ────────────────────────
       - name: Assemble deployment directory
         run: |
-          mkdir -p deploy/DevFighter
+          mkdir -p deploy/TechFighter
           mkdir -p deploy/DevoxxFighter
           cp -r main-branch/dist/* deploy/
-          cp -r dev-branch/dist/* deploy/DevFighter/
+          cp -r tech-branch/dist/* deploy/TechFighter/
           cp -r devoxx-branch/dist/* deploy/DevoxxFighter/
 
       - name: Setup Pages
