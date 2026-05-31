@@ -571,14 +571,14 @@ export class SettingsScene extends Phaser.Scene {
     this.useNumpad = true;
     this.keyboardLayout = 'qwerty';
     setKeyboardLayout('qwerty');
-    localStorage.removeItem('mityFighterSettings');
+    localStorage.removeItem('devFighterSettings');
     this.showTab('options');
   }
 
   /** Load settings from localStorage */
   private loadSettings(): void {
     try {
-      const saved = localStorage.getItem('mityFighterSettings');
+      const saved = localStorage.getItem('devFighterSettings');
       if (saved) {
         const settings = JSON.parse(saved);
         this.useNumpad = settings.useNumpad ?? true;
@@ -606,7 +606,7 @@ export class SettingsScene extends Phaser.Scene {
         customP1Bindings: Object.fromEntries(this.customP1Bindings),
         customP2Bindings: Object.fromEntries(this.customP2Bindings),
       };
-      localStorage.setItem('mityFighterSettings', JSON.stringify(settings));
+      localStorage.setItem('devFighterSettings', JSON.stringify(settings));
     } catch (e) {
       logger.warn('Failed to save settings:', e);
     }

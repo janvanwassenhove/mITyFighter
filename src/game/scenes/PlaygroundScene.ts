@@ -178,7 +178,7 @@ export class PlaygroundScene extends Phaser.Scene {
   private addInstructions(): void {
     const p1Keys = getP1MovementKeysDisplay();
     const text = [
-      'mITyFighter - Playground',
+      'DevFighter - Playground',
       '',
       `P1: ${p1Keys} + F/G/H (attacks) + Q/E (cycle char)`,
       'P2: Arrows + Numpad 1/2/3 (attacks) + U/O (cycle char)',

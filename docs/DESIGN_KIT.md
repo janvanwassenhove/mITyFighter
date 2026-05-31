@@ -4,7 +4,7 @@
 
 ## Overview
 
-mITyFighter is a **pixel-art 2D fighting game** built with TypeScript, Phaser 3, and Vite. This design kit establishes visual and interaction standards to ensure consistency across all game elements.
+DevFighter is a **pixel-art 2D fighting game** built with TypeScript, Phaser 3, and Vite. This design kit establishes visual and interaction standards to ensure consistency across all game elements.
 
 ## Visual Identity
 
