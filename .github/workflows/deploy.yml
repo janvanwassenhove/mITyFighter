@@ -1,11 +1,11 @@
 # GitHub Pages deployment workflow
-# Deploys main branch to root and DevoxxFighter branch to /DevoxxFighter/ sub-path
+# Deploys main branch to root, DevFighter to /DevFighter/, and DevoxxFighter to /DevoxxFighter/
 
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, DevoxxFighter]
+    branches: [main, DevFighter, DevoxxFighter]
   # Allow manual trigger from Actions tab
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job — builds main (root) and DevoxxFighter (sub-path)
+  # Build job — builds main (root), DevFighter (sub-path), and DevoxxFighter (sub-path)
   build:
     runs-on: ubuntu-latest
     steps:
@@ -65,36 +65,70 @@ jobs:
         env:
           BASE_URL: /${{ github.event.repository.name }}/
 
+      # ── DevFighter branch (sub-path /DevFighter/) ─────
+      - name: Checkout DevFighter branch
+        uses: actions/checkout@v4
+        with:
+          ref: DevFighter
+          path: dev-branch
+
+      - name: Install dependencies (DevFighter)
+        working-directory: dev-branch
+        run: npm ci
+
+      - name: Lint (DevFighter)
+        working-directory: dev-branch
+        run: npm run lint
+
+      - name: Type check (DevFighter)
+        working-directory: dev-branch
+        run: npm run typecheck
+
+      - name: Tests (DevFighter)
+        working-directory: dev-branch
+        run: npm run test
+
+      - name: Validate assets (DevFighter)
+        working-directory: dev-branch
+        run: npm run validate:assets
+        continue-on-error: true
+
+      - name: Build DevFighter
+        working-directory: dev-branch
+        run: npm run build
+        env:
+          BASE_URL: /${{ github.event.repository.name }}/DevFighter/
+
       # ── DevoxxFighter branch (sub-path /DevoxxFighter/) ─────
       - name: Checkout DevoxxFighter branch
         uses: actions/checkout@v4
         with:
           ref: DevoxxFighter
-          path: dev-branch
+          path: devoxx-branch
 
       - name: Install dependencies (DevoxxFighter)
-        working-directory: dev-branch
+        working-directory: devoxx-branch
         run: npm ci
 
       - name: Lint (DevoxxFighter)
-        working-directory: dev-branch
+        working-directory: devoxx-branch
         run: npm run lint
 
       - name: Type check (DevoxxFighter)
-        working-directory: dev-branch
+        working-directory: devoxx-branch
         run: npm run typecheck
 
       - name: Tests (DevoxxFighter)
-        working-directory: dev-branch
+        working-directory: devoxx-branch
         run: npm run test
 
       - name: Validate assets (DevoxxFighter)
-        working-directory: dev-branch
+        working-directory: devoxx-branch
         run: npm run validate:assets
         continue-on-error: true
 
       - name: Build DevoxxFighter
-        working-directory: dev-branch
+        working-directory: devoxx-branch
         run: npm run build
         env:
           BASE_URL: /${{ github.event.repository.name }}/DevoxxFighter/
@@ -102,9 +136,11 @@ jobs:
       # ── Assemble combined deployment ────────────────────────
       - name: Assemble deployment directory
         run: |
+          mkdir -p deploy/DevFighter
           mkdir -p deploy/DevoxxFighter
           cp -r main-branch/dist/* deploy/
-          cp -r dev-branch/dist/* deploy/DevoxxFighter/
+          cp -r dev-branch/dist/* deploy/DevFighter/
+          cp -r devoxx-branch/dist/* deploy/DevoxxFighter/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
