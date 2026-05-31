@@ -1,10 +1,10 @@
-# GitHub Copilot Instructions for mITyFighter
+# GitHub Copilot Instructions for DevoxxFighter
 
 > These instructions guide Copilot's behavior when assisting with this project.
 
 ## Project Overview
 
-mITyFighter is a **pixel-art 2D fighting game** built with:
+DevoxxFighter is a **pixel-art 2D fighting game** built with:
 - **TypeScript** (strict mode)
 - **Phaser 3** (game framework)
 - **Vite** (build tool)

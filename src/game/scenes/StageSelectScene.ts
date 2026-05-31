@@ -421,7 +421,7 @@ export class StageSelectScene extends Phaser.Scene {
 
   /** Select stage and start match */
   private selectStage(): void {
-    const stageId: BackgroundId = BACKGROUND_IDS[this.stageIndex] ?? 'pit';
+    const stageId: BackgroundId = BACKGROUND_IDS[this.stageIndex] ?? BACKGROUND_IDS[0] ?? '';
 
     logger.info(
       `Starting match: ${this.p1FighterId} vs ${this.p2FighterId} on ${stageId} (mode: ${this.gameMode})`

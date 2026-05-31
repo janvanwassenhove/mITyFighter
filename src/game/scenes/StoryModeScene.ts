@@ -83,7 +83,7 @@ export class StoryModeScene extends Phaser.Scene {
       this.fights = generateStoryFights(data.playerFighterId, difficulty);
     } else {
       // Fallback - shouldn't happen
-      const defaultFighter = FIGHTER_IDS[0] ?? 'bartholomew_blaze';
+      const defaultFighter = FIGHTER_IDS[0] ?? 'ninja_jan';
       this.progress = createStoryProgress(defaultFighter as FighterId, 'medium');
       this.fights = generateStoryFights(defaultFighter as FighterId, 'medium');
     }

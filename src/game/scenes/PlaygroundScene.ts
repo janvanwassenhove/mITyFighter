@@ -56,7 +56,7 @@ export class PlaygroundScene extends Phaser.Scene {
   private debugOverlay!: DebugOverlay;
 
   /** Current fighter IDs */
-  private fighterIds: [FighterId, FighterId] = ['sir_budgetalot', 'count_cardboardius'];
+  private fighterIds: [FighterId, FighterId] = ['ninja_jan', 'ninja_jan'];
 
   /** Current background ID (null if no backgrounds registered) */
   private currentBackground: BackgroundId | null = BACKGROUND_IDS[0] ?? null;
@@ -178,7 +178,7 @@ export class PlaygroundScene extends Phaser.Scene {
   private addInstructions(): void {
     const p1Keys = getP1MovementKeysDisplay();
     const text = [
-      'mITyFighter - Playground',
+      'DevoxxFighter - Playground',
       '',
       `P1: ${p1Keys} + F/G/H (attacks) + Q/E (cycle char)`,
       'P2: Arrows + Numpad 1/2/3 (attacks) + U/O (cycle char)',
@@ -286,7 +286,7 @@ export class PlaygroundScene extends Phaser.Scene {
 
     // Handle action inputs (only if not already in non-idle action)
     const currentAction = fighter.getCurrentAction();
-    const isIdle = currentAction === 'idle' || currentAction === 'idle2';
+    const isIdle = currentAction === 'idle';
 
     if (isIdle || this.isLoopingAction(currentAction)) {
       // Priority: attacks > special > movement
@@ -313,7 +313,7 @@ export class PlaygroundScene extends Phaser.Scene {
    * Check if an action loops.
    */
   private isLoopingAction(action: ActionId | null): boolean {
-    return action === 'idle' || action === 'idle2' || action === 'walk' || action === 'run';
+    return action === 'idle' || action === 'walk' || action === 'run';
   }
 
   /**
@@ -322,15 +322,6 @@ export class PlaygroundScene extends Phaser.Scene {
   private tryPlayAction(fighter: PixelFighterRenderer, action: ActionId): void {
     if (fighter.hasAction(action)) {
       fighter.playAction(action);
-    } else if (action === 'special') {
-      // Try alternative special actions
-      const alternatives: ActionId[] = ['cast', 'blade', 'kunai', 'dart', 'shot', 'spine'];
-      for (const alt of alternatives) {
-        if (fighter.hasAction(alt)) {
-          fighter.playAction(alt);
-          return;
-        }
-      }
     }
   }
 

@@ -11,9 +11,8 @@ import {
   parseFighterAnimationKey,
   getBackgroundTextureKey,
   parseBackgroundTextureKey,
+  getProfilePicKey,
   ACTION_IDS,
-  ACTION_TO_FILENAME,
-  FILENAME_TO_ACTION,
 } from '../src/game/assets/AssetKeys';
 
 describe('AssetKeys', () => {
@@ -33,8 +32,8 @@ describe('AssetKeys', () => {
       expect(getFighterAnimationKey('kunoichi', 'idle')).toBe(
         'fighter:kunoichi:idle'
       );
-      expect(getFighterAnimationKey('ninja_monk', 'blade')).toBe(
-        'fighter:ninja_monk:blade'
+      expect(getFighterAnimationKey('ninja_monk', 'special')).toBe(
+        'fighter:ninja_monk:special'
       );
     });
   });
@@ -87,30 +86,37 @@ describe('AssetKeys', () => {
     it('should contain all expected actions', () => {
       expect(ACTION_IDS).toContain('idle');
       expect(ACTION_IDS).toContain('attack1');
+      expect(ACTION_IDS).toContain('attack2');
       expect(ACTION_IDS).toContain('special');
       expect(ACTION_IDS).toContain('jump');
+      expect(ACTION_IDS).toContain('walk');
+      expect(ACTION_IDS).toContain('run');
+      expect(ACTION_IDS).toContain('crouch');
+      expect(ACTION_IDS).toContain('block');
+      expect(ACTION_IDS).toContain('hurt');
+      expect(ACTION_IDS).toContain('dead');
+      expect(ACTION_IDS).toContain('win');
+      expect(ACTION_IDS).toContain('intro');
     });
 
     it('should have unique values', () => {
       const uniqueIds = new Set(ACTION_IDS);
       expect(uniqueIds.size).toBe(ACTION_IDS.length);
     });
-  });
 
-  describe('ACTION_TO_FILENAME mapping', () => {
-    it('should have mapping for all actions', () => {
-      for (const actionId of ACTION_IDS) {
-        expect(ACTION_TO_FILENAME[actionId]).toBeDefined();
-        expect(ACTION_TO_FILENAME[actionId]).toMatch(/\.png$/);
-      }
+    it('should have exactly 13 actions', () => {
+      expect(ACTION_IDS.length).toBe(13);
     });
   });
 
-  describe('FILENAME_TO_ACTION mapping', () => {
-    it('should be inverse of ACTION_TO_FILENAME', () => {
-      for (const [action, filename] of Object.entries(ACTION_TO_FILENAME)) {
-        expect(FILENAME_TO_ACTION[filename]).toBe(action);
-      }
+  describe('getProfilePicKey', () => {
+    it('should generate correct profile pic key', () => {
+      expect(getProfilePicKey('ninja_jan', 'head-closeup')).toBe(
+        'profile/ninja_jan/head-closeup'
+      );
+      expect(getProfilePicKey('ninja_jan', 'fighting-pose')).toBe(
+        'profile/ninja_jan/fighting-pose'
+      );
     });
   });
 });

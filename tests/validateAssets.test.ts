@@ -61,8 +61,9 @@ describe('validateAssets', () => {
     it('should return correct filename for each action', () => {
       expect(getExpectedFilename('idle')).toBe('Idle.png');
       expect(getExpectedFilename('attack1')).toBe('Attack_1.png');
-      expect(getExpectedFilename('idle2')).toBe('Idle_2.png');
       expect(getExpectedFilename('special')).toBe('Special.png');
+      expect(getExpectedFilename('win')).toBe('Win.png');
+      expect(getExpectedFilename('intro')).toBe('Intro.png');
     });
   });
 });

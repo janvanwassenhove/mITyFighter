@@ -1,0 +1,744 @@
+{
+  "name": "meg grimspire",
+  "version": "1.0.0",
+  "character": {
+    "id": "meg_grimspire",
+    "displayName": "Meg Grimspire",
+    "tagline": "I was calm… until you existed near me.",
+    "bio": "Meg is the legendary \"quiet one\" — and that's the most terrifying kind. She doesn't raise her voice. She raises eyebrows. Every statue in her garden used to be a critic.",
+    "motivation": "To win the tournament because she heard someone say: \"Medusas are overrated.\" No one remembers who said it. Which proves her point."
+  },
+  "spriteSize": {
+    "width": 128,
+    "height": 128
+  },
+  "animationCount": 16,
+  "profilePicCount": 4,
+  "animations": [
+    {
+      "name": "Punch",
+      "folder": "punch",
+      "frameCount": 16,
+      "loop": "loop",
+      "totalDuration": 960,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 7,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 8,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 9,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 10,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 11,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 12,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 13,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 14,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 15,
+          "delay": 60,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "punch/spritesheet.png",
+      "gif": "punch/preview.gif"
+    },
+    {
+      "name": "Kick",
+      "folder": "kick",
+      "frameCount": 10,
+      "loop": "loop",
+      "totalDuration": 700,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 7,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 8,
+          "delay": 70,
+          "hitboxes": []
+        },
+        {
+          "index": 9,
+          "delay": 70,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "kick/spritesheet.png",
+      "gif": "kick/preview.gif"
+    },
+    {
+      "name": "Hurt",
+      "folder": "hurt",
+      "frameCount": 3,
+      "loop": "once",
+      "totalDuration": 240,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "hurt/spritesheet.png",
+      "gif": "hurt/preview.gif"
+    },
+    {
+      "name": "Hurt",
+      "folder": "hurt",
+      "frameCount": 3,
+      "loop": "loop",
+      "totalDuration": 240,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "hurt/spritesheet.png",
+      "gif": "hurt/preview.gif"
+    },
+    {
+      "name": "KO",
+      "folder": "ko",
+      "frameCount": 3,
+      "loop": "once",
+      "totalDuration": 300,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 100,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "ko/spritesheet.png",
+      "gif": "ko/preview.gif"
+    },
+    {
+      "name": "Idle",
+      "folder": "idle",
+      "frameCount": 7,
+      "loop": "loop",
+      "totalDuration": 1050,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 150,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 150,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 150,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 150,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 150,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 150,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 150,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "idle/spritesheet.png",
+      "gif": "idle/preview.gif"
+    },
+    {
+      "name": "Walk",
+      "folder": "walk",
+      "frameCount": 13,
+      "loop": "loop",
+      "totalDuration": 1300,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 7,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 8,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 9,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 10,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 11,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 12,
+          "delay": 100,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "walk/spritesheet.png",
+      "gif": "walk/preview.gif"
+    },
+    {
+      "name": "Jump",
+      "folder": "jump",
+      "frameCount": 7,
+      "loop": "once",
+      "totalDuration": 700,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 100,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "jump/spritesheet.png",
+      "gif": "jump/preview.gif"
+    },
+    {
+      "name": "Run",
+      "folder": "run",
+      "frameCount": 7,
+      "loop": "loop",
+      "totalDuration": 560,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "run/spritesheet.png",
+      "gif": "run/preview.gif"
+    },
+    {
+      "name": "Crouch",
+      "folder": "crouch",
+      "frameCount": 3,
+      "loop": "once",
+      "totalDuration": 240,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "crouch/spritesheet.png",
+      "gif": "crouch/preview.gif"
+    },
+    {
+      "name": "Special",
+      "folder": "special",
+      "frameCount": 5,
+      "loop": "once",
+      "totalDuration": 400,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "special/spritesheet.png",
+      "gif": "special/preview.gif"
+    },
+    {
+      "name": "Block",
+      "folder": "block",
+      "frameCount": 7,
+      "loop": "once",
+      "totalDuration": 420,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 60,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 60,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "block/spritesheet.png",
+      "gif": "block/preview.gif"
+    },
+    {
+      "name": "Win",
+      "folder": "win",
+      "frameCount": 5,
+      "loop": "once",
+      "totalDuration": 500,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 100,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "win/spritesheet.png",
+      "gif": "win/preview.gif"
+    },
+    {
+      "name": "Intro",
+      "folder": "intro",
+      "frameCount": 5,
+      "loop": "once",
+      "totalDuration": 500,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 100,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 100,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "intro/spritesheet.png",
+      "gif": "intro/preview.gif"
+    },
+    {
+      "name": "Idle2",
+      "folder": "idle2",
+      "frameCount": 5,
+      "loop": "once",
+      "totalDuration": 400,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "idle2/spritesheet.png",
+      "gif": "idle2/preview.gif"
+    },
+    {
+      "name": "Attack3",
+      "folder": "attack3",
+      "frameCount": 7,
+      "loop": "once",
+      "totalDuration": 560,
+      "frames": [
+        {
+          "index": 0,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 1,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 2,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 3,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 4,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 5,
+          "delay": 80,
+          "hitboxes": []
+        },
+        {
+          "index": 6,
+          "delay": 80,
+          "hitboxes": []
+        }
+      ],
+      "spriteSheet": "attack3/spritesheet.png",
+      "gif": "attack3/preview.gif"
+    }
+  ],
+  "profilePics": [
+    {
+      "type": "head-closeup",
+      "filename": "profile-pics/head-closeup.png"
+    },
+    {
+      "type": "fighting-pose",
+      "filename": "profile-pics/fighting-pose.png"
+    },
+    {
+      "type": "fighting-pose-alt",
+      "filename": "profile-pics/fighting-pose-alt.png"
+    },
+    {
+      "type": "head-closeup-alt",
+      "filename": "profile-pics/head-closeup-alt.png"
+    }
+  ],
+  "exportedAt": "2026-04-19T15:16:45.567Z"
+}

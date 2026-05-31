@@ -7,6 +7,7 @@ import type Phaser from 'phaser';
 
 import { getAudioManager } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
+import { getActiveTheme } from '../config/themes';
 
 // =============================================================================
 // AnnouncerUI
@@ -27,11 +28,13 @@ export class AnnouncerUI {
     this.container.setDepth(200);
     this.container.setVisible(false);
 
+    const theme = getActiveTheme();
+
     // Main announcement text
     this.mainText = scene.add.text(0, -30, '', {
-      fontFamily: 'Impact, sans-serif',
+      fontFamily: theme.fonts.title,
       fontSize: '96px',
-      color: '#ffffff',
+      color: theme.colors.text,
       stroke: '#000000',
       strokeThickness: 8,
       shadow: {
@@ -47,9 +50,9 @@ export class AnnouncerUI {
 
     // Sub text (e.g., player name)
     this.subText = scene.add.text(0, 50, '', {
-      fontFamily: 'Impact, sans-serif',
+      fontFamily: theme.fonts.title,
       fontSize: '48px',
-      color: '#ffcc00',
+      color: theme.colors.primary,
       stroke: '#000000',
       strokeThickness: 4,
     });
@@ -71,8 +74,9 @@ export class AnnouncerUI {
 
   /** Show "FIGHT!" announcement */
   public showFight(callback?: () => void): void {
+    const theme = getActiveTheme();
     this.mainText.setText('FIGHT!');
-    this.mainText.setColor('#ff0000');
+    this.mainText.setColor(theme.colors.highlight);
     this.subText.setText('');
     
     // Play fight voice clip
@@ -83,16 +87,18 @@ export class AnnouncerUI {
 
   /** Show "K.O." announcement */
   public showKO(callback?: () => void): void {
+    const theme = getActiveTheme();
     this.mainText.setText('K.O.');
-    this.mainText.setColor('#ff0000');
+    this.mainText.setColor(theme.colors.highlight);
     this.subText.setText('');
     this.show(1500, callback, true);
   }
 
   /** Show "TIME!" announcement */
   public showTimeUp(callback?: () => void): void {
+    const theme = getActiveTheme();
     this.mainText.setText('TIME!');
-    this.mainText.setColor('#ffcc00');
+    this.mainText.setColor(theme.colors.primary);
     this.subText.setText('');
     
     // Play time voice clip

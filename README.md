@@ -1,4 +1,4 @@
-# mITyFighter
+# DevoxxFighter
 
 A production-grade 2D pixel fighting game built with TypeScript, Phaser 3, and Vite.
 
@@ -199,7 +199,7 @@ An ancient honking force of nature who refuses to retire. Surprisingly spry for 
 ## �📁 Project Structure
 
 ```
-mITyFighter/
+DevoxxFighter/
 ├── docs/                    # Spec-Kit documentation
 │   ├── SPEC_KIT.md         # Development contract
 │   ├── ASSETS.md           # Asset conventions
@@ -227,7 +227,7 @@ mITyFighter/
 
 ## 🌐 Play Online
 
-The game is hosted on GitHub Pages: **[Play mITyFighter](https://YOUR_USERNAME.github.io/mITyFighter/)**
+The game is hosted on GitHub Pages: **[Play DevoxxFighter](https://YOUR_USERNAME.github.io/DevoxxFighter/)**
 
 > Replace `YOUR_USERNAME` with the actual GitHub username/organization once deployed.
 

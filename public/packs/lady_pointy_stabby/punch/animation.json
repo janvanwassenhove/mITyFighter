@@ -1,0 +1,37 @@
+{
+  "name": "Punch",
+  "frameCount": 6,
+  "loop": "loop",
+  "frames": [
+    {
+      "index": 0,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 1,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 2,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 3,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 4,
+      "delay": 60,
+      "hitboxes": []
+    },
+    {
+      "index": 5,
+      "delay": 60,
+      "hitboxes": []
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 ## Vision
 
-mITyFighter aims to support competitive online play with:
+DevoxxFighter aims to support competitive online play with:
 - Low-latency gameplay (rollback netcode)
 - Tournament-viable stability
 - Cross-platform play (browser, PWA, iPad)

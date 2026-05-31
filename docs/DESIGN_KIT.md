@@ -4,7 +4,7 @@
 
 ## Overview
 
-mITyFighter is a **pixel-art 2D fighting game** built with TypeScript, Phaser 3, and Vite. This design kit establishes visual and interaction standards to ensure consistency across all game elements.
+DevoxxFighter is a **pixel-art 2D fighting game** built with TypeScript, Phaser 3, and Vite. This design kit establishes visual and interaction standards to ensure consistency across all game elements.
 
 ## Visual Identity
 
@@ -19,20 +19,40 @@ mITyFighter is a **pixel-art 2D fighting game** built with TypeScript, Phaser 3,
 
 ### Color Palette
 
-| Element | Color | Hex Code | Usage |
-|---------|-------|----------|-------|
-| Background (DOM) | Dark Navy | `#1a1a2e` | Page background |
-| Canvas | Transparent | - | Overlays DOM background |
-| Debug Text | White | `#ffffff` | Debug overlay |
-| Debug Background | Semi-black | `rgba(0,0,0,0.5)` | Debug overlay panels |
+Colors are managed through the theme system (`src/game/config/themes.ts`). All UI components use `getActiveTheme()` instead of hardcoded values.
+
+#### Classic Theme (default)
+
+| Role | Hex | Usage |
+|------|-----|-------|
+| Primary | `#ffcc00` | Titles, selected items |
+| Highlight | `#ff4444` | Accents, hover, combat |
+| Text | `#ffffff` | Body text |
+| Text Muted | `#888888` | Secondary labels |
+| Panel | `#222244` | Card/tab backgrounds |
+| Border | `#444466` | Inactive borders |
+
+#### Devoxx France 2026 Theme
+
+| Role | Hex | Usage |
+|------|-----|-------|
+| Primary / Banner | `#E7B127` | Titles, selected items |
+| Highlight | `#EA7E14` | Accents, hover, combat |
+| Text | `#FFFFFF` | Body text |
+| Text Muted | `#9BC1B8` | Secondary labels |
+| Teal accent | `#609689` | Borders, success state |
+| Dark green | `#304936` | Panel backgrounds |
+
+Themes are selectable in **Settings → Options → Theme**.
 
 ### Typography
 
-| Context | Style | Notes |
-|---------|-------|-------|
-| UI Text | Pixel font (TBD) | Consider Press Start 2P |
-| Debug Overlay | System monospace | Fixed-width for alignment |
-| Announcer | Large, impact | "FIGHT!", "KO!" etc. |
+| Context | Classic | Devoxx FR 2026 | Notes |
+|---------|---------|----------------|-------|
+| Titles / Headlines | Impact | Pirulen | Large, bold |
+| Body / UI text | Arial | Open Sans | Clean, readable |
+| Announcer | Impact | Pirulen | "FIGHT!", "KO!" etc. |
+| Debug Overlay | Courier New | Courier New | Fixed-width |
 
 ---
 

@@ -1,0 +1,32 @@
+{
+  "name": "Kick",
+  "frameCount": 5,
+  "loop": "loop",
+  "frames": [
+    {
+      "index": 0,
+      "delay": 70,
+      "hitboxes": []
+    },
+    {
+      "index": 1,
+      "delay": 70,
+      "hitboxes": []
+    },
+    {
+      "index": 2,
+      "delay": 70,
+      "hitboxes": []
+    },
+    {
+      "index": 3,
+      "delay": 70,
+      "hitboxes": []
+    },
+    {
+      "index": 4,
+      "delay": 70,
+      "hitboxes": []
+    }
+  ]
+}
