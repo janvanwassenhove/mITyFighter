@@ -64,7 +64,7 @@ export class TitleScene extends Phaser.Scene {
     this.createBackgroundEffects();
 
     // Main title
-    this.titleText = this.add.text(GAME_WIDTH / 2, 200, 'DEVOXX FIGHTER', {
+    this.titleText = this.add.text(GAME_WIDTH / 2, 200, 'TECH FIGHTER', {
       fontFamily: theme.fonts.title,
       fontSize: '96px',
       color: theme.colors.highlight,
