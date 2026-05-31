@@ -617,14 +617,14 @@ export class SettingsScene extends Phaser.Scene {
     this.useNumpad = true;
     this.keyboardLayout = 'qwerty';
     setKeyboardLayout('qwerty');
-    localStorage.removeItem('DevFighterSettings');
+    localStorage.removeItem('TechFighterSettings');
     this.showTab('options');
   }
 
   /** Load settings from localStorage */
   private loadSettings(): void {
     try {
-      const saved = localStorage.getItem('DevFighterSettings');
+      const saved = localStorage.getItem('TechFighterSettings');
       if (saved) {
         const settings = JSON.parse(saved);
         this.useNumpad = settings.useNumpad ?? true;
@@ -652,7 +652,7 @@ export class SettingsScene extends Phaser.Scene {
         customP1Bindings: Object.fromEntries(this.customP1Bindings),
         customP2Bindings: Object.fromEntries(this.customP2Bindings),
       };
-      localStorage.setItem('DevFighterSettings', JSON.stringify(settings));
+      localStorage.setItem('TechFighterSettings', JSON.stringify(settings));
     } catch (e) {
       logger.warn('Failed to save settings:', e);
     }

@@ -295,7 +295,7 @@ function validateBackground(
  */
 function main(): void {
   console.log('='.repeat(60));
-  console.log('DevFighter Asset Validation (Pack Format)');
+  console.log('TechFighter Asset Validation (Pack Format)');
   console.log('='.repeat(60));
 
   errors = [];

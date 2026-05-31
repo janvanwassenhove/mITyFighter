@@ -32,7 +32,7 @@ export class GameApp {
    * Start the game application.
    */
   public start(): void {
-    logger.info('Starting DevFighter...');
+    logger.info('Starting TechFighter...');
 
     const config = createGameConfig({
       scenes: [

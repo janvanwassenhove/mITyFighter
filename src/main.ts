@@ -1,5 +1,5 @@
 /**
- * @fileoverview Main entry point for DevFighter
+ * @fileoverview Main entry point for TechFighter
  * @see docs/SPEC_KIT.md - This file follows the spec-kit contract
  */
 

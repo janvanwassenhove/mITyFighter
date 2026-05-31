@@ -1,4 +1,4 @@
-# Spec-Kit: The Contract for DevFighter Development
+# Spec-Kit: The Contract for TechFighter Development
 
 > **This document is the source of truth.** All code changes MUST follow this contract.
 

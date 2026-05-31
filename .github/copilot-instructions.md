@@ -1,10 +1,10 @@
-# GitHub Copilot Instructions for DevFighter
+# GitHub Copilot Instructions for TechFighter
 
 > These instructions guide Copilot's behavior when assisting with this project.
 
 ## Project Overview
 
-DevFighter is a **pixel-art 2D fighting game** built with:
+TechFighter is a **pixel-art 2D fighting game** built with:
 - **TypeScript** (strict mode)
 - **Phaser 3** (game framework)
 - **Vite** (build tool)
