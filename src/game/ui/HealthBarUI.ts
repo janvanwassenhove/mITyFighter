@@ -6,6 +6,7 @@
 import type Phaser from 'phaser';
 
 import { GAME_WIDTH } from '../config/constants';
+import { getActiveTheme } from '../config/themes';
 
 // =============================================================================
 // Constants
@@ -100,15 +101,16 @@ export class HealthBarUI {
   /** Create player name labels */
   private createNames(): void {
     const centerX = GAME_WIDTH / 2;
+    const theme = getActiveTheme();
 
     this.p1Name = this.scene.add.text(
       centerX - 60 - BAR_WIDTH,
       BAR_Y - 25,
       'PLAYER 1',
       {
-        fontFamily: 'Impact, sans-serif',
+        fontFamily: theme.fonts.title,
         fontSize: '20px',
-        color: '#ffff00',
+        color: theme.colors.primary,
         stroke: '#000000',
         strokeThickness: 3,
       }
@@ -116,9 +118,9 @@ export class HealthBarUI {
     this.container.add(this.p1Name);
 
     this.p2Name = this.scene.add.text(centerX + 60, BAR_Y - 25, 'PLAYER 2', {
-      fontFamily: 'Impact, sans-serif',
+      fontFamily: theme.fonts.title,
       fontSize: '20px',
-      color: '#ffff00',
+      color: theme.colors.primary,
       stroke: '#000000',
       strokeThickness: 3,
     });
@@ -172,20 +174,21 @@ export class HealthBarUI {
   /** Create timer display */
   private createTimer(): void {
     const centerX = GAME_WIDTH / 2;
+    const theme = getActiveTheme();
 
     // Timer background
     this.timerBg = this.scene.add.graphics();
     this.timerBg.fillStyle(0x000000, 0.8);
     this.timerBg.fillRoundedRect(centerX - 40, BAR_Y - 10, 80, 60, 8);
-    this.timerBg.lineStyle(3, 0xffcc00, 1);
+    this.timerBg.lineStyle(3, theme.colors.primaryHex, 1);
     this.timerBg.strokeRoundedRect(centerX - 40, BAR_Y - 10, 80, 60, 8);
     this.container.add(this.timerBg);
 
     // Timer text
     this.timerText = this.scene.add.text(centerX, BAR_Y + 20, '99', {
-      fontFamily: 'Impact, sans-serif',
+      fontFamily: theme.fonts.title,
       fontSize: '42px',
-      color: '#ffffff',
+      color: theme.colors.text,
       stroke: '#000000',
       strokeThickness: 4,
     });

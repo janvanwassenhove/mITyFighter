@@ -39,6 +39,10 @@ export enum FighterState {
   UPPERCUT = 'uppercut',
   /** Slide/sweep attack */
   SLIDE = 'slide',
+  /** Victory pose after winning */
+  WIN = 'win',
+  /** Intro animation at match start */
+  INTRO = 'intro',
 }
 
 /** States where fighter can be interrupted */
@@ -298,9 +302,9 @@ export function stateToActionId(state: FighterState): string {
       return 'jump';
     case FighterState.CROUCH:
     case FighterState.SLIDE:
-      return 'idle'; // Use idle or a crouch anim if available
+      return 'crouch';
     case FighterState.BLOCK:
-      return 'idle'; // Use idle or block anim
+      return 'block'
     case FighterState.ATTACK1:
       return 'attack1';
     case FighterState.ATTACK2:
@@ -311,6 +315,10 @@ export function stateToActionId(state: FighterState): string {
       return 'hurt';
     case FighterState.DEAD:
       return 'dead';
+    case FighterState.WIN:
+      return 'win';
+    case FighterState.INTRO:
+      return 'intro';
     default:
       return 'idle';
   }

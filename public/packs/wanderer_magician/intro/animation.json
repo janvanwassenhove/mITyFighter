@@ -1,0 +1,47 @@
+{
+  "name": "Intro",
+  "frameCount": 8,
+  "loop": "once",
+  "frames": [
+    {
+      "index": 0,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 1,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 2,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 3,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 4,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 5,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 6,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 7,
+      "delay": 100,
+      "hitboxes": []
+    }
+  ]
+}

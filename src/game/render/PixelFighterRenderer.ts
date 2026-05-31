@@ -336,6 +336,26 @@ export class PixelFighterRenderer {
   }
 
   /**
+   * Apply a tint color to the sprite (for mirror-match palette swap).
+   *
+   * @param color - Tint color (e.g., 0x8888ff for blue shift). Use 0xffffff to clear.
+   */
+  public setTint(color: number): void {
+    if (color === 0xffffff) {
+      this.sprite.clearTint();
+    } else {
+      this.sprite.setTint(color);
+    }
+  }
+
+  /**
+   * Clear any applied tint.
+   */
+  public clearTint(): void {
+    this.sprite.clearTint();
+  }
+
+  /**
    * Destroy the renderer and sprite.
    */
   public destroy(): void {

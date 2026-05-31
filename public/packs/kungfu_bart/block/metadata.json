@@ -1,0 +1,43 @@
+{
+  "frames": [
+    {
+      "filename": "frame_000.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 60
+    },
+    {
+      "filename": "frame_001.png",
+      "frame": {
+        "x": 64,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 60
+    },
+    {
+      "filename": "frame_002.png",
+      "frame": {
+        "x": 128,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 60
+    }
+  ],
+  "meta": {
+    "image": "spritesheet.png",
+    "size": {
+      "w": 192,
+      "h": 64
+    },
+    "format": "RGBA8888",
+    "scale": 1
+  }
+}

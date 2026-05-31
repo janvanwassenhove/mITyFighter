@@ -1,0 +1,27 @@
+{
+  "name": "Crouch",
+  "frameCount": 4,
+  "loop": "once",
+  "frames": [
+    {
+      "index": 0,
+      "delay": 80,
+      "hitboxes": []
+    },
+    {
+      "index": 1,
+      "delay": 80,
+      "hitboxes": []
+    },
+    {
+      "index": 2,
+      "delay": 80,
+      "hitboxes": []
+    },
+    {
+      "index": 3,
+      "delay": 80,
+      "hitboxes": []
+    }
+  ]
+}

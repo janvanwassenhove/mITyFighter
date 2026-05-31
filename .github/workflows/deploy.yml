@@ -1,5 +1,5 @@
 # GitHub Pages deployment workflow
-# Deploys the built game to GitHub Pages on push to main branch
+# Deploys main branch to root and DevFighter branch to /DevFighter/ sub-path
 
 name: Deploy to GitHub Pages
 
@@ -22,41 +22,89 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job
+  # Build job — builds main (root) and DevFighter (sub-path)
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install dependencies
+      # ── Main branch (root site) ──────────────────────────────
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-branch
+
+      - name: Install dependencies (main)
+        working-directory: main-branch
         run: npm ci
 
-      - name: Run linter
+      - name: Lint (main)
+        working-directory: main-branch
         run: npm run lint
 
-      - name: Run type check
+      - name: Type check (main)
+        working-directory: main-branch
         run: npm run typecheck
 
-      - name: Run tests
+      - name: Tests (main)
+        working-directory: main-branch
         run: npm run test
 
-      - name: Validate assets
+      - name: Validate assets (main)
+        working-directory: main-branch
         run: npm run validate:assets
         continue-on-error: true
 
-      - name: Build for GitHub Pages
+      - name: Build main
+        working-directory: main-branch
         run: npm run build
         env:
-          # This will be automatically set to the repo name by GitHub Actions
-          # e.g., /DevFighter/ for https://username.github.io/DevFighter/
           BASE_URL: /${{ github.event.repository.name }}/
+
+      # ── DevFighter branch (sub-path /DevFighter/) ─────
+      - name: Checkout DevFighter branch
+        uses: actions/checkout@v4
+        with:
+          ref: DevFighter
+          path: dev-branch
+
+      - name: Install dependencies (DevFighter)
+        working-directory: dev-branch
+        run: npm ci
+
+      - name: Lint (DevFighter)
+        working-directory: dev-branch
+        run: npm run lint
+
+      - name: Type check (DevFighter)
+        working-directory: dev-branch
+        run: npm run typecheck
+
+      - name: Tests (DevFighter)
+        working-directory: dev-branch
+        run: npm run test
+
+      - name: Validate assets (DevFighter)
+        working-directory: dev-branch
+        run: npm run validate:assets
+        continue-on-error: true
+
+      - name: Build DevFighter
+        working-directory: dev-branch
+        run: npm run build
+        env:
+          BASE_URL: /${{ github.event.repository.name }}/DevFighter/
+
+      # ── Assemble combined deployment ────────────────────────
+      - name: Assemble deployment directory
+        run: |
+          mkdir -p deploy/DevFighter
+          cp -r main-branch/dist/* deploy/
+          cp -r dev-branch/dist/* deploy/DevFighter/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -64,7 +112,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: './deploy'
 
   # Deployment job
   deploy:

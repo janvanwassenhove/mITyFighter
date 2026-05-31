@@ -7,6 +7,7 @@ import Phaser from 'phaser';
 
 import { getAudioManager } from '../audio/AudioManager';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config/constants';
+import { getActiveTheme } from '../config/themes';
 import { logger } from '../utils/logger';
 
 // =============================================================================
@@ -54,17 +55,19 @@ export class TitleScene extends Phaser.Scene {
     // Initialize audio manager for this scene
     getAudioManager().init(this);
 
+    const theme = getActiveTheme();
+
     // Dark background with gradient effect
-    this.cameras.main.setBackgroundColor('#0a0a15');
+    this.cameras.main.setBackgroundColor(theme.colors.background);
 
     // Add animated background particles
     this.createBackgroundEffects();
 
     // Main title
-    this.titleText = this.add.text(GAME_WIDTH / 2, 200, 'mITy FIGHTER', {
-      fontFamily: 'Impact, sans-serif',
+    this.titleText = this.add.text(GAME_WIDTH / 2, 200, 'DEVOXX FIGHTER', {
+      fontFamily: theme.fonts.title,
       fontSize: '96px',
-      color: '#ff4444',
+      color: theme.colors.highlight,
       stroke: '#000000',
       strokeThickness: 8,
       shadow: {
@@ -93,9 +96,9 @@ export class TitleScene extends Phaser.Scene {
       300,
       '⚔️ PIXEL KOMBAT ⚔️',
       {
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: theme.fonts.body,
         fontSize: '32px',
-        color: '#ffcc00',
+        color: theme.colors.primary,
         stroke: '#000000',
         strokeThickness: 4,
       }
@@ -118,9 +121,9 @@ export class TitleScene extends Phaser.Scene {
       500,
       'PRESS ENTER TO START',
       {
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: theme.fonts.body,
         fontSize: '28px',
-        color: '#ffffff',
+        color: theme.colors.text,
         stroke: '#000000',
         strokeThickness: 3,
       }
@@ -193,11 +196,13 @@ export class TitleScene extends Phaser.Scene {
       { label: 'ℹ ABOUT', action: () => this.goToAbout() },
     ];
 
+    const theme = getActiveTheme();
+
     menuOptions.forEach((option, index) => {
       const text = this.add.text(GAME_WIDTH / 2, menuStartY + index * menuSpacing, option.label, {
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: theme.fonts.body,
         fontSize: '26px',
-        color: '#ffffff',
+        color: theme.colors.text,
         stroke: '#000000',
         strokeThickness: 3,
       });
@@ -282,9 +287,10 @@ export class TitleScene extends Phaser.Scene {
 
   /** Update menu selection visual */
   private updateMenuSelection(): void {
+    const theme = getActiveTheme();
     this.menuItems.forEach((item, index) => {
       const isSelected = index === this.selectedMenuIndex;
-      item.text.setColor(isSelected ? '#ffcc00' : '#ffffff');
+      item.text.setColor(isSelected ? theme.colors.primary : theme.colors.text);
       item.text.setScale(isSelected ? 1.1 : 1);
     });
   }
@@ -331,13 +337,14 @@ export class TitleScene extends Phaser.Scene {
     }
 
     // Add subtle animated gradient bars
+    const theme = getActiveTheme();
     for (let i = 0; i < 5; i++) {
       const bar = this.add.rectangle(
         0,
         150 + i * 100,
         GAME_WIDTH * 2,
         50,
-        0xff4444,
+        theme.colors.highlightHex,
         0.03
       );
       bar.setOrigin(0, 0.5);

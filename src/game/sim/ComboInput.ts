@@ -14,16 +14,17 @@ export type RelativeDirection = 'forward' | 'backward' | 'up' | 'down' | 'neutra
 
 /** Combo move identifiers */
 export type ComboMove =
-  | 'jump_forward'      // Up + Forward - jumping kick
-  | 'jump_backward'     // Up + Backward - retreat jump
-  | 'crouch_forward'    // Down + Forward - sliding sweep
-  | 'crouch_backward'   // Down + Backward - defensive crouch
-  | 'dash_forward'      // Forward + Forward (tap tap) - dash
-  | 'dash_backward'     // Backward + Backward (tap tap) - backdash
-  | 'uppercut'          // Down, Up - rising uppercut
-  | 'fireball_forward'  // Down, Forward + Attack - hadouken style
-  | 'fireball_backward' // Down, Backward + Attack - reverse fireball
-  | 'spin_kick'         // Backward, Forward + Attack - spinning attack
+  | 'jump_forward'        // Up + Forward - jumping kick
+  | 'jump_backward'       // Up + Backward - retreat jump
+  | 'crouch_forward'      // Down + Forward - sliding sweep
+  | 'crouch_backward'     // Down + Backward - defensive crouch
+  | 'dash_forward'        // Forward + Forward (tap tap) - dash
+  | 'dash_backward'       // Backward + Backward (tap tap) - backdash
+  | 'uppercut'            // Down, Up - rising uppercut
+  | 'fireball_forward'    // Down, Forward + Attack - hadouken style
+  | 'fireball_backward'   // Down, Backward + Attack - reverse fireball
+  | 'spin_kick'           // Backward, Forward + Attack - spinning attack
+  | 'character_special'   // Down, Down + Attack1 - character special move
   | null;
 
 /** Input history entry */
@@ -211,6 +212,15 @@ export class ComboInputDetector {
     
     // Check motion + attack combos
     if (hasAnyAttack) {
+      // Down, Down + Attack1 = Character Special (↓↓+A1)
+      if (hasAttack1 && this.checkMotion(['down', 'down'])) {
+        return {
+          move: 'character_special',
+          modifiedInput: input,
+          consumeAttack: true,
+        };
+      }
+
       // Down, Forward + Attack = Fireball forward
       if (this.checkMotion(['down', 'forward'])) {
         return {
@@ -448,5 +458,13 @@ export const COMBO_MOVE_DATA: Record<NonNullable<ComboMove>, ComboMoveProperties
     startup: 3,
     recovery: 14,
     description: 'Spinning kick attack',
+  },
+  character_special: {
+    damageMultiplier: 1.8,
+    velocityX: 4,
+    velocityY: 0,
+    startup: 10,
+    recovery: 18,
+    description: 'Character special move (↓↓+A1)',
   },
 };

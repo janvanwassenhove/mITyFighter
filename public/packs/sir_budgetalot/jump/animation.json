@@ -1,0 +1,87 @@
+{
+  "name": "Jump",
+  "frameCount": 16,
+  "loop": "once",
+  "frames": [
+    {
+      "index": 0,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 1,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 2,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 3,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 4,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 5,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 6,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 7,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 8,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 9,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 10,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 11,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 12,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 13,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 14,
+      "delay": 100,
+      "hitboxes": []
+    },
+    {
+      "index": 15,
+      "delay": 100,
+      "hitboxes": []
+    }
+  ]
+}

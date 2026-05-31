@@ -203,6 +203,16 @@ export function updateFighter(
       fighter.vx = 0;
       break;
 
+    case FighterState.WIN:
+      // Stay in win pose
+      fighter.vx = 0;
+      break;
+
+    case FighterState.INTRO:
+      // Play intro, transition to idle when done
+      handleIntroState(fighter);
+      break;
+
     case FighterState.BLOCK:
       handleBlockState(fighter, input);
       break;
@@ -266,6 +276,11 @@ function handleMovementState(
         
       case 'fireball_forward':
       case 'fireball_backward':
+        startAttack(fighter, FighterState.SPECIAL, 'special');
+        fighter.vx = moveData.velocityX * fighter.facing;
+        return;
+        
+      case 'character_special':
         startAttack(fighter, FighterState.SPECIAL, 'special');
         fighter.vx = moveData.velocityX * fighter.facing;
         return;
@@ -424,6 +439,15 @@ function handleHurtState(fighter: FighterRuntimeState): void {
   }
 }
 
+/** Handle intro state - plays once then transitions to idle */
+function handleIntroState(fighter: FighterRuntimeState): void {
+  fighter.vx = 0;
+  // Intro lasts ~60 frames (1 second at 60 ticks)
+  if (fighter.stateFrames >= 60) {
+    changeState(fighter, FighterState.IDLE);
+  }
+}
+
 /** Handle block state */
 function handleBlockState(
   fighter: FighterRuntimeState,
@@ -578,4 +602,20 @@ export function setFighterDead(fighter: FighterRuntimeState): void {
   fighter.stateFrames = 0;
   fighter.vx = 0;
   fighter.stunFrames = 999;
+}
+
+/** Set fighter to win state */
+export function setFighterWin(fighter: FighterRuntimeState): void {
+  fighter.state = FighterState.WIN;
+  fighter.stateFrames = 0;
+  fighter.vx = 0;
+  fighter.currentAttack = null;
+}
+
+/** Set fighter to intro state */
+export function setFighterIntro(fighter: FighterRuntimeState): void {
+  fighter.state = FighterState.INTRO;
+  fighter.stateFrames = 0;
+  fighter.vx = 0;
+  fighter.currentAttack = null;
 }

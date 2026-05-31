@@ -1,0 +1,73 @@
+{
+  "frames": [
+    {
+      "filename": "frame_000.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 100
+    },
+    {
+      "filename": "frame_001.png",
+      "frame": {
+        "x": 64,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 100
+    },
+    {
+      "filename": "frame_002.png",
+      "frame": {
+        "x": 128,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 100
+    },
+    {
+      "filename": "frame_003.png",
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 100
+    },
+    {
+      "filename": "frame_004.png",
+      "frame": {
+        "x": 256,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 100
+    },
+    {
+      "filename": "frame_005.png",
+      "frame": {
+        "x": 320,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "duration": 100
+    }
+  ],
+  "meta": {
+    "image": "spritesheet.png",
+    "size": {
+      "w": 384,
+      "h": 64
+    },
+    "format": "RGBA8888",
+    "scale": 1
+  }
+}

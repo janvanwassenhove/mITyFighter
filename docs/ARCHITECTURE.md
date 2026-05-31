@@ -55,6 +55,7 @@ Application orchestrator. Manages global state and module initialization.
 |------|---------|
 | `gameConfig.ts` | Phaser configuration, input settings |
 | `constants.ts` | Game constants, frame rates, dimensions |
+| `themes.ts` | Switchable theme system (colors, fonts) |
 
 ### `src/game/sim/` (Deterministic Simulation)
 
